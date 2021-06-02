@@ -1,5 +1,6 @@
 import 'package:centicbid/util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 
 class AuthService {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -35,5 +36,17 @@ class AuthService {
 
   Future signOut() async {
     await _auth.signOut();
+  }
+
+  Future resetPassword(String email) async {
+    try {
+      return await _auth.sendPasswordResetEmail(email: email);
+    } on PlatformException catch (e) {
+      showErrorToast(e.message.toString());
+      return null;
+    } catch (e) {
+      showErrorToast("Unknown error");
+      return null;
+    }
   }
 }

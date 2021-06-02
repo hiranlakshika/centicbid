@@ -1,5 +1,5 @@
 name: centicbid
-description: A new Flutter project.
+description: CenticBids is an online bidding platform which allow users to bid for online auctions.
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `pub publish`. This is preferred for private packages.
@@ -37,6 +37,7 @@ dependencies:
   carousel_slider: ^4.0.0-nullsafety.0
   firebase_auth: ^1.2.0
   firebase_core: ^1.2.0
+  the_validator: ^2.0.0
 
 dev_dependencies:
   flutter_test:
