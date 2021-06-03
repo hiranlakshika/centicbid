@@ -22,3 +22,9 @@ showInfoToast(String message) {
       textColor: Colors.white,
       fontSize: 16.0);
 }
+
+enum MyBidsType {
+  Won,
+  Lost,
+  Ongoing,
+}

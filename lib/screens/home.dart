@@ -1,5 +1,5 @@
 import 'package:centicbid/screens/auction_list.dart';
-import 'package:centicbid/screens/my_bids.dart';
+import 'package:centicbid/screens/bids/my_bids_tab_view.dart';
 import 'package:centicbid/screens/sign_in.dart';
 import 'package:centicbid/services/auth.dart';
 import 'package:flutter/material.dart';
