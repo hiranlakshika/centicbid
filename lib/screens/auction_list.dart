@@ -11,13 +11,13 @@ class AuctionList extends StatefulWidget {
 
 class _AuctionListState extends State<AuctionList> {
   List<Auction> auctions = [
-    Auction('title', 'description', 90.0, 100.0, null, 100000),
-    Auction('title', 'description', 90.0, 100.0, null, 100),
-    Auction('title', 'description', 90.0, 100.0, null, 100),
-    Auction('title', 'description', 90.0, 100.0, null, 100),
-    Auction('title', 'description', 90.0, 100.0, null, 100),
-    Auction('title', 'description', 90.0, 100.0, null, 100),
-    Auction('title', 'description', 90.0, 100.0, null, 100)
+    Auction('1', 'title', 'description', 90.0, 100.0, null, 100000),
+    Auction('2', 'title', 'description', 90.0, 100.0, null, 100),
+    Auction('3', 'title', 'description', 90.0, 100.0, null, 100),
+    Auction('4', 'title', 'description', 90.0, 100.0, null, 100),
+    Auction('5', 'title', 'description', 90.0, 100.0, null, 100),
+    Auction('6', 'title', 'description', 90.0, 100.0, null, 100),
+    Auction('7', 'title', 'description', 90.0, 100.0, null, 100)
   ];
 
   @override
