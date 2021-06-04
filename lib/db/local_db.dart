@@ -29,8 +29,7 @@ class DatabaseHelper {
     Directory documentsDirectory = await getApplicationDocumentsDirectory();
     String path = join(documentsDirectory.path, _databaseName);
     return await openDatabase(path,
-        version: _databaseVersion,
-        onCreate: _onCreate);
+        version: _databaseVersion, onCreate: _onCreate);
   }
 
   Future _onCreate(Database db, int version) async {
@@ -47,10 +46,31 @@ class DatabaseHelper {
           ''');
   }
 
-  Future<int> insert(Map<String, dynamic> row) async {
-    Database db = await instance.database;
-    return await db.insert(table, row);
+  Future<int> insert(Map<String, dynamic> row, var table) async {
+    Database? db = await DatabaseHelper().database;
+    return await db!.insert(table, row);
   }
 
-  //https://suragch.medium.com/simple-sqflite-database-example-in-flutter-e56a5aaa3f91
+  Future<List<Map<String, dynamic>>> queryAllRows(var table) async {
+    Database? db = await DatabaseHelper().database;
+    return await db!.query(table);
+  }
+
+  Future<int?> queryRowCount(var table) async {
+    Database? db = await DatabaseHelper().database;
+    return Sqflite.firstIntValue(
+        await db!.rawQuery('SELECT COUNT(*) FROM $table'));
+  }
+
+  Future<int> update(Map<String, dynamic> row, var table, var columnId) async {
+    Database? db = await DatabaseHelper().database;
+    int id = row[columnId];
+    return await db!
+        .update(table, row, where: '$columnId = ?', whereArgs: [id]);
+  }
+
+  Future<int> delete(int id, var table, var columnId) async {
+    Database? db = await DatabaseHelper().database;
+    return await db!.delete(table, where: '$columnId = ?', whereArgs: [id]);
+  }
 }
