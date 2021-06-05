@@ -65,7 +65,7 @@ class AuctionListItem extends StatelessWidget {
           style: titleTextStyle,
         ),
         icon: ElevatedButton(
-          onPressed: () => Get.to(() => ItemDetails()),
+          onPressed: () => Get.to(() => ItemDetails(auction)),
           child: Text('Bid Now'),
         ),
       ),

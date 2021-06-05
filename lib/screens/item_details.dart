@@ -1,8 +1,21 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:centicbid/models/auction.dart';
+import 'package:centicbid/theme/styles.dart';
 import 'package:flutter/material.dart';
-import 'package:carousel_slider/carousel_slider.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:getwidget/getwidget.dart';
 
-class ItemDetails extends StatelessWidget {
-  ItemDetails({Key? key}) : super(key: key);
+class ItemDetails extends StatefulWidget {
+  final Auction auction;
+
+  ItemDetails(this.auction, {Key? key}) : super(key: key);
+
+  @override
+  _ItemDetailsState createState() => _ItemDetailsState();
+}
+
+class _ItemDetailsState extends State<ItemDetails> {
+  int _currentImage = 0;
   final List<String> imgList = [
     'https://images.unsplash.com/photo-1520342868574-5fa3804e551c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=6ff92caffcdd63681a35134a6770ed3b&auto=format&fit=crop&w=1951&q=80',
     'https://images.unsplash.com/photo-1522205408450-add114ad53fe?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=368f45b0888aeb0b7b08e3a1084d3ede&auto=format&fit=crop&w=1950&q=80',
@@ -12,48 +25,62 @@ class ItemDetails extends StatelessWidget {
     'https://images.unsplash.com/photo-1519985176271-adb1088fa94c?ixlib=rb-0.3.5&ixid=eyJhcHBfaWQiOjEyMDd9&s=a0c8d632e977f94e5d312d9893258f59&auto=format&fit=crop&w=1355&q=80'
   ];
 
-  List<Widget> getImageSliders(List<String> imgList) {
-    return imgList
-        .map((item) => Container(
-              child: Container(
-                margin: EdgeInsets.all(5.0),
-                child: ClipRRect(
-                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
-                    child: Stack(
-                      children: <Widget>[
-                        Image.network(item, fit: BoxFit.cover, width: 1000.0),
-                        Positioned(
-                          bottom: 0.0,
-                          left: 0.0,
-                          right: 0.0,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                colors: [
-                                  Color.fromARGB(200, 0, 0, 0),
-                                  Color.fromARGB(0, 0, 0, 0)
-                                ],
-                                begin: Alignment.bottomCenter,
-                                end: Alignment.topCenter,
-                              ),
-                            ),
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10.0, horizontal: 20.0),
-                            child: Text(
-                              'No. ${imgList.indexOf(item)} image',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    )),
+  List<T> map<T>(List list, Function handler) {
+    List<T> result = [];
+    for (var i = 0; i < list.length; i++) {
+      result.add(handler(i, list[i]));
+    }
+    return result;
+  }
+
+  Widget carousel() {
+    return GFCarousel(
+      autoPlay: false,
+      activeIndicator: Colors.blue,
+      enableInfiniteScroll: false,
+      items: imgList.map(
+        (url) {
+          return Container(
+            margin: EdgeInsets.all(8.0),
+            child: ClipRRect(
+              borderRadius: BorderRadius.all(Radius.circular(5.0)),
+              child: CachedNetworkImage(
+                progressIndicatorBuilder: (context, url, downloadProgress) =>
+                    Center(
+                  child: CircularProgressIndicator(
+                      value: downloadProgress.progress),
+                ),
+                imageUrl: url,
+                fit: BoxFit.cover,
+                width: 1000.0,
               ),
-            ))
-        .toList();
+            ),
+          );
+        },
+      ).toList(),
+      onPageChanged: (index) {
+        setState(() {
+          _currentImage = index;
+        });
+      },
+    );
+  }
+
+  Widget carouselIndicator() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: map<Widget>(imgList, (index, url) {
+        return Container(
+          width: 10.0,
+          height: 10.0,
+          margin: EdgeInsets.symmetric(vertical: 10.0, horizontal: 2.0),
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: _currentImage == index ? Colors.blueAccent : Colors.black12,
+          ),
+        );
+      }),
+    );
   }
 
   @override
@@ -65,23 +92,38 @@ class ItemDetails extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          CarouselSlider(
-            options: CarouselOptions(
-              aspectRatio: 2.0,
-              enableInfiniteScroll: false,
-              pageSnapping: true,
-              enlargeCenterPage: true,
-              enlargeStrategy: CenterPageEnlargeStrategy.height,
-            ),
-            items: getImageSliders(imgList),
+          carousel(),
+          carouselIndicator(),
+          SizedBox(
+            height: 10.0,
           ),
-          Text('Title'),
-          Text('Price'),
+          Text(
+            widget.auction.title,
+            style: titleTextStyle,
+          ),
+          SizedBox(
+            height: 10.0,
+          ),
+          Text('Price : ' + widget.auction.basePrice.toString()),
+          SizedBox(
+            height: 10.0,
+          ),
+          Text('Latest Bid : ' + widget.auction.latestBid!.toString()),
+          SizedBox(
+            height: 10.0,
+          ),
           Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Latest Bid'),
-              Text('Remaining Time'),
+              Text('Remaining Time : '),
+              CountdownTimer(
+                endTime: widget.auction.remainingTime,
+                endWidget: Text('Expired'),
+              ),
             ],
+          ),
+          SizedBox(
+            height: 10.0,
           ),
           ElevatedButton(
             onPressed: () {},
