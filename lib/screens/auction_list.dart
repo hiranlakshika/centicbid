@@ -1,5 +1,7 @@
 import 'package:centicbid/models/auction.dart';
 import 'package:centicbid/screens/auction_list_item.dart';
+import 'package:centicbid/util.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 class AuctionList extends StatefulWidget {
@@ -10,19 +12,8 @@ class AuctionList extends StatefulWidget {
 }
 
 class _AuctionListState extends State<AuctionList> {
-  List<Auction> auctions = [
-    Auction('1', 'title', 'description', 90.0, 100.0, null, 100000),
-    Auction('2', 'title', 'description', 90.0, 100.0, null, 100),
-    Auction('3', 'title', 'description', 90.0, 100.0, null, 100),
-    Auction('4', 'title', 'description', 90.0, 100.0, null, 100),
-    Auction('5', 'title', 'description', 90.0, 100.0, null, 100),
-    Auction('6', 'title', 'description', 90.0, 100.0, null, 100),
-    Auction('7', 'title', 'description', 90.0, 100.0, null, 100)
-  ];
-
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
   }
 
@@ -30,11 +21,28 @@ class _AuctionListState extends State<AuctionList> {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.all(8.0),
-      child: ListView.builder(
-          itemCount: auctions.length,
-          itemBuilder: (context, index) {
-            return AuctionListItem(auctions[index]);
-          }),
+      child: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('auction').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return getLoadingDualRing();
+          } else {
+            return ListView(
+              children: snapshot.data!.docs.map((DocumentSnapshot document) {
+                var auction = Auction(
+                    id: (document.data()! as Map)['id'],
+                    title: (document.data()! as Map)['title'],
+                    description: (document.data()! as Map)['description'],
+                    basePrice: (document.data()! as Map)['base_price'],
+                    latestBid: (document.data()! as Map)['latest_bid'],
+                    images: (document.data()! as Map)['images'],
+                    remainingTime: (document.data()! as Map)['remaining_time']);
+                return AuctionListItem(auction);
+              }).toList(),
+            );
+          }
+        },
+      ),
     );
   }
 }

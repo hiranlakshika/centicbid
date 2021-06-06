@@ -26,9 +26,8 @@ class Home extends StatelessWidget {
                     color: Colors.black,
                   ),
                 ),
-                currentAccountPicture: CircleAvatar(
-                    radius: 50,
-                    backgroundImage: AssetImage('assets/images/pacman.png')),
+                currentAccountPicture:
+                CircleAvatar(radius: 50, backgroundImage: null),
                 decoration: BoxDecoration(),
                 accountEmail: Text(
                   'admin@unihub.com',

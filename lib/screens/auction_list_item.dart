@@ -22,7 +22,7 @@ class AuctionListItem extends StatelessWidget {
         avatar: GFAvatar(
           size: 70.0,
           backgroundImage: CachedNetworkImageProvider(
-              auction.imageUrl ?? 'http://via.placeholder.com/350x150'),
+              auction.images?[0] ?? 'http://via.placeholder.com/350x150'),
           shape: GFAvatarShape.standard,
         ),
         subTitle: Column(

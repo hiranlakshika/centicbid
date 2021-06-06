@@ -2,28 +2,12 @@ class Auction {
   final String id;
   final String title;
   final String description;
-  final double basePrice;
-  final double? latestBid;
-  final String? imageUrl;
-  final int remainingTime;
+  final dynamic basePrice;
+  final dynamic latestBid;
+  final List<dynamic>? images;
+  final dynamic remainingTime;
 
-  Auction(this.id, this.title, this.description, this.basePrice, this.latestBid,
-      this.imageUrl, this.remainingTime);
+  Auction({required this.id, required this.title, required this.description, required this.basePrice, this.latestBid,
+      this.images, required this.remainingTime});
 
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'title': title,
-      'description': description,
-      'base_price': basePrice,
-      'latest_bid': latestBid,
-      'image_URL': imageUrl,
-      'remaining_time': remainingTime,
-    };
-  }
-
-  @override
-  String toString() {
-    return 'Auction{id: $id, title: $title, description: $description, base_price: $basePrice, latest_bid: $latestBid, image_URL: $imageUrl, remaining_time: $remainingTime}';
-  }
 }

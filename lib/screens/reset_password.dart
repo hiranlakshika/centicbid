@@ -18,7 +18,7 @@ class _ResetPasswordState extends State<ResetPassword> {
 
   Widget _buildEmailTF() {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
       children: <Widget>[
         SizedBox(height: 10.0),
         Container(
@@ -31,12 +31,17 @@ class _ResetPasswordState extends State<ResetPassword> {
             },
             keyboardType: TextInputType.emailAddress,
             decoration: InputDecoration(
-              border: InputBorder.none,
+              border: OutlineInputBorder(
+                borderSide: BorderSide(
+                  width: 1.0,
+                  color: Colors.blue,
+                ),
+              ),
               contentPadding: EdgeInsets.only(top: 14.0),
               prefixIcon: Icon(
                 Icons.email,
               ),
-              hintText: 'Enter your Email',
+              hintText: 'Email',
             ),
           ),
         ),
@@ -77,16 +82,16 @@ class _ResetPasswordState extends State<ResetPassword> {
         centerTitle: true,
         title: Text('Reset Password'),
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            _buildEmailTF(),
-            SizedBox(
-              height: 30.0,
-            ),
-            _resetBtn(),
-          ],
+      body: Container(
+        padding: EdgeInsets.all(10.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              _buildEmailTF(),
+              _resetBtn(),
+            ],
+          ),
         ),
       ),
     );

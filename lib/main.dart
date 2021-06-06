@@ -6,6 +6,7 @@ import 'package:get_storage/get_storage.dart';
 
 main() async {
   await GetStorage.init();
+  WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(GetMaterialApp(home: Home()));
 }
