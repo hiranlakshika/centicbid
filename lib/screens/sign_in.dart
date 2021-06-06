@@ -1,5 +1,6 @@
+import 'package:centicbid/controllers/auth_controller.dart';
+import 'package:centicbid/screens/home.dart';
 import 'package:centicbid/screens/reset_password.dart';
-import 'package:centicbid/services/auth.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -17,12 +18,18 @@ class SignIn extends StatefulWidget {
 class _SignInState extends State<SignIn> {
   late String _email, _password;
   final _formKey = GlobalKey<FormState>();
-  final AuthService _auth = AuthService();
+  late AuthController authController;
   bool _rememberMe = false;
   bool _loading = false;
   bool _termsAndConditions = false;
   bool _isSignup = false;
   String _appBarTitle = 'Sign in';
+
+  @override
+  void initState() {
+    authController = Get.put(AuthController());
+    super.initState();
+  }
 
   Widget _buildEmailTF() {
     return Column(
@@ -124,9 +131,11 @@ class _SignInState extends State<SignIn> {
           onPressed: () async {
             if (_formKey.currentState!.validate()) {
               setState(() => _loading = true);
-              dynamic result = await _auth.signInWithEmail(_email, _password);
+              dynamic result =
+                  await authController.signInWithEmail(_email, _password);
               if (result != null) {
-                print("Signed in successfully");
+                showInfoToast("Signed in successfully");
+                Get.off(() => Home());
               } else {
                 setState(() => _loading = false);
               }
@@ -158,14 +167,15 @@ class _SignInState extends State<SignIn> {
               if (_termsAndConditions) {
                 setState(() => _loading = true);
                 dynamic result =
-                    await _auth.registerWithEmail(_email, _password);
+                    await authController.registerWithEmail(_email, _password);
                 if (result != null) {
-                  showErrorToast("Successfully Registered");
+                  showInfoToast("Successfully Registered");
                   setState(() => _loading = false);
                   Navigator.pop(context);
                 }
               } else {
                 showErrorToast("You must agree to the terms and conditions");
+                setState(() => _loading = false);
               }
             }
           },
@@ -347,40 +357,42 @@ class _SignInState extends State<SignIn> {
         title: Text(_appBarTitle),
         centerTitle: true,
       ),
-      body: Container(
-        padding: EdgeInsets.all(10.0),
-        child: Form(
-          key: _formKey,
-          child: SafeArea(
-            child: Column(
-              children: [
-                _buildEmailTF(),
-                SizedBox(
-                  height: 8.0,
-                ),
-                _buildPasswordTF(),
-                SizedBox(
-                  height: 8.0,
-                ),
-                _buildConfirmPasswordTF(),
-                Visibility(
-                  visible: _isSignup,
-                  child: SizedBox(
-                    height: 8.0,
+      body: _loading
+          ? getLoadingDualRing()
+          : Container(
+              padding: EdgeInsets.all(10.0),
+              child: Form(
+                key: _formKey,
+                child: SafeArea(
+                  child: Column(
+                    children: [
+                      _buildEmailTF(),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      _buildPasswordTF(),
+                      SizedBox(
+                        height: 8.0,
+                      ),
+                      _buildConfirmPasswordTF(),
+                      Visibility(
+                        visible: _isSignup,
+                        child: SizedBox(
+                          height: 8.0,
+                        ),
+                      ),
+                      _buildRememberMeCheckbox(),
+                      _buildForgotPasswordBtn(),
+                      _buildLoginBtn(),
+                      _buildTermsCheckbox(),
+                      _registerBtn(),
+                      _buildSignInBtn(),
+                      _buildSignUpBtn(),
+                    ],
                   ),
                 ),
-                _buildRememberMeCheckbox(),
-                _buildForgotPasswordBtn(),
-                _buildLoginBtn(),
-                _buildTermsCheckbox(),
-                _registerBtn(),
-                _buildSignInBtn(),
-                _buildSignUpBtn(),
-              ],
+              ),
             ),
-          ),
-        ),
-      ),
     );
   }
 }

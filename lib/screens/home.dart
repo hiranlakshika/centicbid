@@ -1,13 +1,11 @@
 import 'package:centicbid/screens/auction_list.dart';
 import 'package:centicbid/screens/bids/my_bids_tab_view.dart';
 import 'package:centicbid/screens/sign_in.dart';
-import 'package:centicbid/services/auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class Home extends StatelessWidget {
   Home({Key? key}) : super(key: key);
-  final AuthService _auth = AuthService();
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +59,7 @@ class Home extends StatelessWidget {
                 leading: Icon(
                   Icons.logout,
                 ),
-                onTap: () async => await _auth.signOut(),
+                // onTap: () async => await _auth.signOut(),
               ),
             ],
           ),

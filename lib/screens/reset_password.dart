@@ -1,4 +1,4 @@
-import 'package:centicbid/services/auth.dart';
+import 'package:centicbid/controllers/auth_controller.dart';
 import 'package:centicbid/util.dart';
 import 'package:flutter/material.dart';
 import 'package:the_validator/the_validator.dart';
@@ -12,7 +12,7 @@ class ResetPassword extends StatefulWidget {
 
 class _ResetPasswordState extends State<ResetPassword> {
   final _formKey = GlobalKey<FormState>();
-  final AuthService _auth = AuthService();
+  AuthController authController = AuthController.to;
   late String _email;
   bool _loading = false;
 
@@ -57,7 +57,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         onPressed: () async {
           if (_formKey.currentState!.validate()) {
             setState(() => _loading = true);
-            await _auth.resetPassword(_email);
+            await authController.resetPassword(_email);
             showInfoToast("A password reset link has been sent to $_email");
             setState(() => _loading = false);
           }
@@ -82,18 +82,20 @@ class _ResetPasswordState extends State<ResetPassword> {
         centerTitle: true,
         title: Text('Reset Password'),
       ),
-      body: Container(
-        padding: EdgeInsets.all(10.0),
-        child: Form(
-          key: _formKey,
-          child: Column(
-            children: [
-              _buildEmailTF(),
-              _resetBtn(),
-            ],
-          ),
-        ),
-      ),
+      body: _loading
+          ? getLoadingDualRing()
+          : Container(
+              padding: EdgeInsets.all(10.0),
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  children: [
+                    _buildEmailTF(),
+                    _resetBtn(),
+                  ],
+                ),
+              ),
+            ),
     );
   }
 }

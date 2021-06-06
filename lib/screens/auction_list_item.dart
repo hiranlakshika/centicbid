@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:centicbid/db/firestore_util.dart';
 import 'package:centicbid/models/auction.dart';
 import 'package:centicbid/theme/styles.dart';
 import 'package:flutter/cupertino.dart';
@@ -53,7 +54,9 @@ class AuctionListItem extends StatelessWidget {
               height: 5.0,
             ),
             CountdownTimer(
-              endTime: DateTime.now().millisecondsSinceEpoch + 1000 * 10,
+              endTime: getTimeFromFireStoreTimeStamp(auction.remainingTime)
+                      .millisecondsSinceEpoch +
+                  1000 * 30,
               endWidget: Text('Expired'),
             )
           ],

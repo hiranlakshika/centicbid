@@ -1,4 +1,4 @@
-import 'package:centicbid/models/auction.dart';
+import 'package:centicbid/db/firestore_util.dart';
 import 'package:centicbid/screens/auction_list_item.dart';
 import 'package:centicbid/util.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -29,15 +29,7 @@ class _AuctionListState extends State<AuctionList> {
           } else {
             return ListView(
               children: snapshot.data!.docs.map((DocumentSnapshot document) {
-                var auction = Auction(
-                    id: (document.data()! as Map)['id'],
-                    title: (document.data()! as Map)['title'],
-                    description: (document.data()! as Map)['description'],
-                    basePrice: (document.data()! as Map)['base_price'],
-                    latestBid: (document.data()! as Map)['latest_bid'],
-                    images: (document.data()! as Map)['images'],
-                    remainingTime: (document.data()! as Map)['remaining_time']);
-                return AuctionListItem(auction);
+                return AuctionListItem(getAuctionFromSnapshot(document));
               }).toList(),
             );
           }
