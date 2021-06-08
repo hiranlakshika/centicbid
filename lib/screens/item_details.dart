@@ -1,10 +1,17 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:centicbid/controllers/auth_controller.dart';
 import 'package:centicbid/db/firestore_util.dart';
+import 'package:centicbid/db/local_db.dart';
 import 'package:centicbid/models/auction.dart';
+import 'package:centicbid/models/bid.dart';
+import 'package:centicbid/screens/sign_in.dart';
 import 'package:centicbid/theme/styles.dart';
+import 'package:centicbid/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
+import 'package:get/get.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:sqflite/sqflite.dart';
 
 class ItemDetails extends StatefulWidget {
   final Auction auction;
@@ -17,6 +24,7 @@ class ItemDetails extends StatefulWidget {
 
 class _ItemDetailsState extends State<ItemDetails> {
   int _currentImage = 0;
+  AuthController _controller = AuthController.to;
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -122,7 +130,28 @@ class _ItemDetailsState extends State<ItemDetails> {
             height: 10.0,
           ),
           ElevatedButton(
-            onPressed: () {},
+            onPressed: () async {
+              if (_controller.firebaseUser.value == null) {
+                showInfoToast('You need to sign in to place a bid');
+                Get.to(() => SignIn());
+              } else {
+                final db = DatabaseHelper();
+
+                List<Bid> bid = [
+                  Bid(
+                      id: '123',
+                      userId: _controller.firebaseUser.value!.email.toString(),
+                      auctionId: widget.auction.id,
+                      bid: 100)
+                ];
+                // await db.database.whenComplete(() => db.deleteBid('123'));
+                try {
+                  await db.database.whenComplete(() => db.insertBid(bid));
+                } on DatabaseException {
+                  showErrorToast('Error');
+                }
+              }
+            },
             child: Text('Place bid'),
           ),
         ],

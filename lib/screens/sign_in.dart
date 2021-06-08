@@ -27,7 +27,7 @@ class _SignInState extends State<SignIn> {
 
   @override
   void initState() {
-    authController = Get.put(AuthController());
+    authController = AuthController.to;
     super.initState();
   }
 
@@ -170,8 +170,11 @@ class _SignInState extends State<SignIn> {
                     await authController.registerWithEmail(_email, _password);
                 if (result != null) {
                   showInfoToast("Successfully Registered");
-                  setState(() => _loading = false);
-                  Navigator.pop(context);
+                  setState(() {
+                    _loading = false;
+                    _isSignup = false;
+                    _appBarTitle = 'Sign in';
+                  });
                 }
               } else {
                 showErrorToast("You must agree to the terms and conditions");

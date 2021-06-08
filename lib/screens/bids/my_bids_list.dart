@@ -6,8 +6,8 @@ import 'my_bids_list_item.dart';
 class MyBidsList extends StatelessWidget {
   final MyBidsType type;
   final List<Bid> bids = [
-    Bid('title', 'description'),
-    Bid('title', 'description')
+    Bid(id: 'id', userId: 'title', auctionId: 'description', bid: 1),
+    Bid(id: 'id', userId: 'title', auctionId: 'description', bid: 2)
   ];
 
   MyBidsList(this.type, {Key? key}) : super(key: key);
