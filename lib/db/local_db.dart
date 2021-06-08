@@ -29,7 +29,13 @@ class DatabaseHelper {
       join(path, _databaseName),
       onCreate: (database, version) async {
         await database.execute(
-          "CREATE TABLE bid(id TEXT PRIMARY KEY,user_id TEXT NOT NULL, auction_id TEXT NOT NULL, bid REAL NOT NULL)",
+          "CREATE TABLE bid(id TEXT PRIMARY KEY, user_id TEXT NOT NULL, auction_id TEXT NOT NULL, bid REAL NOT NULL)",
+        );
+        await database.execute(
+          "CREATE TABLE auction(id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL, base_price REAL NOT NULL, latest_bid REAL NOT NULL, remaining_time TEXT NOT NULL)",
+        );
+        await database.execute(
+          "CREATE TABLE image(id INTEGER PRIMARY KEY AUTOINCREMENT, image_url TEXT NOT NULL, auction_id TEXT NOT NULL)",
         );
       },
       version: _databaseVersion,

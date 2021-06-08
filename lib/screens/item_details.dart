@@ -4,6 +4,7 @@ import 'package:centicbid/db/firestore_util.dart';
 import 'package:centicbid/db/local_db.dart';
 import 'package:centicbid/models/auction.dart';
 import 'package:centicbid/models/bid.dart';
+import 'package:centicbid/screens/home.dart';
 import 'package:centicbid/screens/sign_in.dart';
 import 'package:centicbid/theme/styles.dart';
 import 'package:centicbid/util.dart';
@@ -24,7 +25,9 @@ class ItemDetails extends StatefulWidget {
 
 class _ItemDetailsState extends State<ItemDetails> {
   int _currentImage = 0;
+  double _bidValue = 0;
   AuthController _controller = AuthController.to;
+  late DateTime _remainingTime;
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -84,6 +87,87 @@ class _ItemDetailsState extends State<ItemDetails> {
     );
   }
 
+  addLocalBidRecord(Bid bid) async {
+    final db = DatabaseHelper();
+
+    List<Bid> bidList = [bid];
+    try {
+      await db.database.whenComplete(() => db.insertBid(bidList));
+    } on DatabaseException {
+      showErrorToast('Error');
+    }
+  }
+
+  addLocalAuctionRecord() async {
+    final db = DatabaseHelper();
+  }
+
+  addFirestoreBidRecord(Bid bid) async {
+    FirestoreController fs = Get.put(FirestoreController());
+    try {
+      await fs.addBid(bid);
+      await fs.updateBidValue(_bidValue, widget.auction.id);
+    } catch (e) {
+      print(e);
+    } finally {
+      print('test');
+    }
+  }
+
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text(
+              'Enter your bid value',
+              textAlign: TextAlign.center,
+            ),
+            content: TextField(
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                if (value.isNotEmpty) {
+                  _bidValue = double.parse(value);
+                }
+              },
+            ),
+            actions: <Widget>[
+              Center(
+                child: ElevatedButton(
+                  child: Text('OK'),
+                  onPressed: () async {
+                    if (_bidValue <= widget.auction.latestBid ||
+                        _bidValue < widget.auction.basePrice) {
+                      showErrorToast(
+                          'Your bid value should be greater than current bid value and price');
+                    } else {
+                      Bid bid = Bid(
+                          id: _controller.firebaseUser.value!.uid +
+                              widget.auction.id +
+                              (_bidValue.toString()),
+                          userId:
+                              _controller.firebaseUser.value!.email.toString(),
+                          auctionId: widget.auction.id,
+                          bid: _bidValue);
+                      await addLocalBidRecord(bid);
+                      await addFirestoreBidRecord(bid);
+                    }
+                    Get.off(() => Home());
+                  },
+                ),
+              ),
+            ],
+          );
+        });
+  }
+
+  @override
+  void initState() {
+    _remainingTime =
+        getTimeFromFireStoreTimeStamp(widget.auction.remainingTime);
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -118,10 +202,7 @@ class _ItemDetailsState extends State<ItemDetails> {
             children: [
               Text('Remaining Time : '),
               CountdownTimer(
-                endTime:
-                    getTimeFromFireStoreTimeStamp(widget.auction.remainingTime)
-                            .millisecondsSinceEpoch +
-                        1000 * 30,
+                endTime: _remainingTime.millisecondsSinceEpoch + 1000 * 30,
                 endWidget: Text('Expired'),
               ),
             ],
@@ -129,30 +210,19 @@ class _ItemDetailsState extends State<ItemDetails> {
           SizedBox(
             height: 10.0,
           ),
-          ElevatedButton(
-            onPressed: () async {
-              if (_controller.firebaseUser.value == null) {
-                showInfoToast('You need to sign in to place a bid');
-                Get.to(() => SignIn());
-              } else {
-                final db = DatabaseHelper();
-
-                List<Bid> bid = [
-                  Bid(
-                      id: '123',
-                      userId: _controller.firebaseUser.value!.email.toString(),
-                      auctionId: widget.auction.id,
-                      bid: 100)
-                ];
-                // await db.database.whenComplete(() => db.deleteBid('123'));
-                try {
-                  await db.database.whenComplete(() => db.insertBid(bid));
-                } on DatabaseException {
-                  showErrorToast('Error');
+          Visibility(
+            visible: _remainingTime.isAfter(DateTime.now()),
+            child: ElevatedButton(
+              onPressed: () {
+                if (_controller.firebaseUser.value == null) {
+                  showInfoToast('You need to sign in to place a bid');
+                  Get.to(() => SignIn());
+                } else {
+                  _displayTextInputDialog(context);
                 }
-              }
-            },
-            child: Text('Place bid'),
+              },
+              child: Text('Place bid'),
+            ),
           ),
         ],
       ),

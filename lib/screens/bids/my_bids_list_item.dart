@@ -41,9 +41,12 @@ class MyBidsListItem extends StatelessWidget {
       content: Text("Some quick example text to build on the card"),
       buttonBar: GFButtonBar(
         children: <Widget>[
-          GFButton(
-            onPressed: () {},
-            text: 'View',
+          Visibility(
+            visible: type != MyBidsType.Lost,
+            child: GFButton(
+              onPressed: () {},
+              text: 'View',
+            ),
           )
         ],
       ),

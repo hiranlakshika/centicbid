@@ -19,4 +19,21 @@ class Bid {
   Map<String, Object?> toMap() {
     return {'id': id, 'user_id': userId, 'auction_id': auctionId, 'bid': bid};
   }
+
+  Bid.fromJson(Map<String, Object?> json)
+      : this(
+          id: json['id']! as String,
+          userId: json['user_id']! as String,
+          auctionId: json['auction_id']! as String,
+          bid: json['bid'] as double,
+        );
+
+  Map<String, Object?> toJson() {
+    return {
+      'id': id,
+      'user_id': userId,
+      'auction_id': auctionId,
+      'bid': bid,
+    };
+  }
 }
