@@ -1,4 +1,6 @@
+import 'package:centicbid/models/auction.dart';
 import 'package:centicbid/models/bid.dart';
+import 'package:centicbid/models/image.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -51,10 +53,47 @@ class DatabaseHelper {
     return result;
   }
 
+  Future<dynamic> insertAuction(Auction auction, double newBid) async {
+    final Database? db = await database;
+    final batch = db!.batch();
+    batch.insert('auction', {
+      'id': auction.id,
+      'title': auction.title,
+      'description': auction.description,
+      'base_price': auction.basePrice,
+      'latest_bid': newBid,
+      'remaining_time': auction.remainingTime,
+    });
+    for (var image in auction.images!) {
+      batch.insert('image', {'image_url': image, 'auction_id': auction.id});
+    }
+
+    return await batch.commit();
+  }
+
   Future<List<Bid>> retrieveBids() async {
     final Database? db = await database;
     final List<Map<String, Object?>> queryResult = await db!.query('bid');
     return queryResult.map((e) => Bid.fromMap(e)).toList();
+  }
+
+  Future<List<Auction>> retrieveAuctions() async {
+    final Database? db = await database;
+    final List<Map<String, Object?>> queryResult = await db!.query('auction');
+    return queryResult.map((e) => Auction.fromMap(e)).toList();
+  }
+
+  Future<List<Auction>> retrieveAuction(String id) async {
+    final Database? db = await database;
+    final result = await db!.query('auction', where: 'id = ?', whereArgs: [id]);
+    return result.map((e) => Auction.fromMap(e)).toList();
+  }
+
+  Future<List<Image>> retrieveImages(String auctionId) async {
+    final Database? db = await database;
+    final result = await db!
+        .query('image', where: 'auction_id = ?', whereArgs: [auctionId]);
+    return result.map((e) => Image.fromMap(e)).toList();
   }
 
   Future<void> deleteBid(String id) async {
@@ -66,9 +105,15 @@ class DatabaseHelper {
     );
   }
 
-  Future<int> updateBid(Bid user) async {
+  Future<int> updateAuction(Auction auction) async {
+    final db = await database;
+    return await db!.update('auction', auction.toMap(),
+        where: 'id = ?', whereArgs: [auction.id]);
+  }
+
+  Future<int> updateBid(Bid bid) async {
     final db = await database;
     return await db!
-        .update('bid', user.toMap(), where: 'uid = ?', whereArgs: [user.id]);
+        .update('bid', bid.toMap(), where: 'id = ?', whereArgs: [bid.id]);
   }
 }

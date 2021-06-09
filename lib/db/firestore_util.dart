@@ -36,9 +36,10 @@ Auction getAuctionFromSnapshot(DocumentSnapshot document) {
       basePrice: (document.data()! as Map)['base_price'],
       latestBid: (document.data()! as Map)['latest_bid'],
       images: (document.data()! as Map)['images'],
-      remainingTime: (document.data()! as Map)['remaining_time']);
+      remainingTime:
+          (document.data()! as Map)['remaining_time'].microsecondsSinceEpoch.toString());
 }
 
-DateTime getTimeFromFireStoreTimeStamp(Timestamp t) {
-  return DateTime.fromMicrosecondsSinceEpoch(t.microsecondsSinceEpoch);
+DateTime getTimeFromFireStoreTimeStamp(String t) {
+  return DateTime.fromMicrosecondsSinceEpoch(int.parse(t));
 }

@@ -4,7 +4,6 @@ import 'package:centicbid/db/firestore_util.dart';
 import 'package:centicbid/db/local_db.dart';
 import 'package:centicbid/models/auction.dart';
 import 'package:centicbid/models/bid.dart';
-import 'package:centicbid/screens/home.dart';
 import 'package:centicbid/screens/sign_in.dart';
 import 'package:centicbid/theme/styles.dart';
 import 'package:centicbid/util.dart';
@@ -98,8 +97,27 @@ class _ItemDetailsState extends State<ItemDetails> {
     }
   }
 
-  addLocalAuctionRecord() async {
+  addLocalAuctionRecord(Auction auction, double newBid) async {
     final db = DatabaseHelper();
+    try {
+      await db.database.whenComplete(() async {
+        final result = await db.retrieveAuction(auction.id);
+        if (result.length == 0) {
+          await db.insertAuction(auction, newBid);
+        } else {
+          Auction newAuction = Auction(
+              id: auction.id,
+              title: auction.title,
+              description: auction.description,
+              basePrice: auction.basePrice,
+              remainingTime: auction.remainingTime,
+              latestBid: newBid);
+          await db.database.whenComplete(() => db.updateAuction(newAuction));
+        }
+      });
+    } on DatabaseException {
+      showErrorToast('Error');
+    }
   }
 
   addFirestoreBidRecord(Bid bid) async {
@@ -149,10 +167,11 @@ class _ItemDetailsState extends State<ItemDetails> {
                               _controller.firebaseUser.value!.email.toString(),
                           auctionId: widget.auction.id,
                           bid: _bidValue);
+                      await addLocalAuctionRecord(widget.auction, _bidValue);
                       await addLocalBidRecord(bid);
                       await addFirestoreBidRecord(bid);
                     }
-                    Get.off(() => Home());
+                    Get.back();
                   },
                 ),
               ),

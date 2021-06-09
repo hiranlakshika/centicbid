@@ -1,11 +1,13 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:centicbid/models/bid.dart';
+import 'package:centicbid/db/firestore_util.dart';
+import 'package:centicbid/models/auction.dart';
 import 'package:centicbid/util.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:getwidget/getwidget.dart';
 
 class MyBidsListItem extends StatelessWidget {
-  final Bid bid;
+  final Auction bid;
   final MyBidsType type;
 
   const MyBidsListItem(this.bid, this.type, {Key? key}) : super(key: key);
@@ -21,24 +23,33 @@ class MyBidsListItem extends StatelessWidget {
         avatar: GFAvatar(
           size: 50.0,
           shape: GFAvatarShape.standard,
-          backgroundImage:
-              CachedNetworkImageProvider('http://via.placeholder.com/350x150'),
+          backgroundImage: CachedNetworkImageProvider(bid.images![0]),
         ),
-        titleText: 'Title',
+        titleText: bid.title,
         subTitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Price :'),
+            Text('Price : ' + bid.basePrice.toString()),
             Visibility(
                 visible: type == MyBidsType.Ongoing || type == MyBidsType.Lost,
-                child: Text('Latest Bid : ')),
+                child: Text('Latest Bid : ' + bid.latestBid.toString())),
             Visibility(
                 visible: type == MyBidsType.Ongoing,
-                child: Text('Remaining Time :')),
+                child: Column(
+                  children: [
+                    Text('Remaining Time :'),
+                    CountdownTimer(
+                      endTime: getTimeFromFireStoreTimeStamp(bid.remainingTime)
+                              .millisecondsSinceEpoch +
+                          1000 * 30,
+                      endWidget: Text('Expired'),
+                    ),
+                  ],
+                )),
           ],
         ),
       ),
-      content: Text("Some quick example text to build on the card"),
+      content: Text(bid.description),
       buttonBar: GFButtonBar(
         children: <Widget>[
           Visibility(

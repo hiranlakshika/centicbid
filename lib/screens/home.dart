@@ -60,15 +60,21 @@ class Home extends StatelessWidget {
                   return Container();
                 }
               }),
-              ListTile(
-                title: Text(
-                  'My Bids',
-                ),
-                leading: Icon(
-                  Icons.monetization_on_outlined,
-                ),
-                onTap: () => Get.to(() => MyBids()),
-              ),
+              Obx(() {
+                if (_controller.firebaseUser.value != null) {
+                  return ListTile(
+                    title: Text(
+                      'My Bids',
+                    ),
+                    leading: Icon(
+                      Icons.monetization_on_outlined,
+                    ),
+                    onTap: () => Get.to(() => MyBids()),
+                  );
+                } else {
+                  return Container();
+                }
+              }),
               Obx(() {
                 if (_controller.firebaseUser.value != null) {
                   return ListTile(

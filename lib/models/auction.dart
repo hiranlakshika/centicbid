@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class Auction {
   final String id;
   final String title;
@@ -5,9 +7,34 @@ class Auction {
   final dynamic basePrice;
   final dynamic latestBid;
   final List<dynamic>? images;
-  final dynamic remainingTime;
+  final String remainingTime;
 
-  Auction({required this.id, required this.title, required this.description, required this.basePrice, this.latestBid,
-      this.images, required this.remainingTime});
+  Auction(
+      {required this.id,
+      required this.title,
+      required this.description,
+      required this.basePrice,
+      this.latestBid,
+      this.images,
+      required this.remainingTime});
 
+  Auction.fromMap(Map<String, dynamic> res)
+      : id = res['id'],
+        title = res['title'],
+        description = res['description'],
+        basePrice = res['base_price'],
+        latestBid = res['latest_bid'],
+        images = res['images'],
+        remainingTime = res['remaining_time'];
+
+  Map<String, Object?> toMap() {
+    return {
+      'id': id,
+      'title': title,
+      'description': description,
+      'base_price': basePrice,
+      'latest_bid': latestBid,
+      'remaining_time': remainingTime
+    };
+  }
 }
