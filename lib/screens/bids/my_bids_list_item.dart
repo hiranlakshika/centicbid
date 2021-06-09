@@ -1,6 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:centicbid/db/firestore_util.dart';
 import 'package:centicbid/models/auction.dart';
+import 'package:centicbid/screens/item_details.dart';
 import 'package:centicbid/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
@@ -57,7 +58,7 @@ class MyBidsListItem extends StatelessWidget {
           Visibility(
             visible: type != MyBidsType.Lost,
             child: GFButton(
-              onPressed: () {},
+              onPressed: () => Get.to(ItemDetails(bid)),
               text: 'view'.tr,
             ),
           )

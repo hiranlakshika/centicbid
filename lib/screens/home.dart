@@ -3,6 +3,7 @@ import 'package:centicbid/screens/auction_list.dart';
 import 'package:centicbid/screens/bids/my_bids_tab_view.dart';
 import 'package:centicbid/screens/sign_in.dart';
 import 'package:centicbid/util.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -24,6 +25,8 @@ class Home extends StatelessWidget {
               Obx(() {
                 if (_controller.firebaseUser.value != null) {
                   return UserAccountsDrawerHeader(
+                    currentAccountPicture:
+                        Image.asset('assets/images/profile.png'),
                     accountName: Text(
                       _controller.firebaseUser.value!.email.toString(),
                       style: TextStyle(
