@@ -93,7 +93,7 @@ class _ItemDetailsState extends State<ItemDetails> {
     try {
       await db.database.whenComplete(() => db.insertBid(bidList));
     } on DatabaseException {
-      showErrorToast('Error');
+      showErrorToast('error'.tr);
     }
   }
 
@@ -116,7 +116,7 @@ class _ItemDetailsState extends State<ItemDetails> {
         }
       });
     } on DatabaseException {
-      showErrorToast('Error');
+      showErrorToast('error'.tr);
     }
   }
 
@@ -127,8 +127,6 @@ class _ItemDetailsState extends State<ItemDetails> {
       await fs.updateBidValue(_bidValue, widget.auction.id);
     } catch (e) {
       print(e);
-    } finally {
-      print('test');
     }
   }
 
@@ -138,7 +136,7 @@ class _ItemDetailsState extends State<ItemDetails> {
         builder: (context) {
           return AlertDialog(
             title: Text(
-              'Enter your bid value',
+              'enter_bid'.tr,
               textAlign: TextAlign.center,
             ),
             content: TextField(
@@ -156,8 +154,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                   onPressed: () async {
                     if (_bidValue <= widget.auction.latestBid ||
                         _bidValue < widget.auction.basePrice) {
-                      showErrorToast(
-                          'Your bid value should be greater than current bid value and price');
+                      showErrorToast('bid_value_should_be_greater'.tr);
                     } else {
                       Bid bid = Bid(
                           id: _controller.firebaseUser.value!.uid +
@@ -191,7 +188,7 @@ class _ItemDetailsState extends State<ItemDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Item Details'),
+        title: Text('item_details'.tr),
         centerTitle: true,
       ),
       body: Column(
@@ -208,21 +205,21 @@ class _ItemDetailsState extends State<ItemDetails> {
           SizedBox(
             height: 10.0,
           ),
-          Text('Price : ' + widget.auction.basePrice.toString()),
+          Text('price'.tr + ' : ' + widget.auction.basePrice.toString()),
           SizedBox(
             height: 10.0,
           ),
-          Text('Latest Bid : ' + widget.auction.latestBid!.toString()),
+          Text('latest_bid'.tr + ' : ' + widget.auction.latestBid!.toString()),
           SizedBox(
             height: 10.0,
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text('Remaining Time : '),
+              Text('remaining_time'.tr + ' : '),
               CountdownTimer(
                 endTime: _remainingTime.millisecondsSinceEpoch + 1000 * 30,
-                endWidget: Text('Expired'),
+                endWidget: Text('expired'.tr),
               ),
             ],
           ),
@@ -234,13 +231,13 @@ class _ItemDetailsState extends State<ItemDetails> {
             child: ElevatedButton(
               onPressed: () {
                 if (_controller.firebaseUser.value == null) {
-                  showInfoToast('You need to sign in to place a bid');
+                  showInfoToast('user_needs_to_sign_in'.tr);
                   Get.to(() => SignIn());
                 } else {
                   _displayTextInputDialog(context);
                 }
               },
-              child: Text('Place bid'),
+              child: Text('place_bid'.tr),
             ),
           ),
         ],

@@ -5,6 +5,7 @@ import 'package:centicbid/util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:getwidget/getwidget.dart';
+import 'package:get/get.dart';
 
 class MyBidsListItem extends StatelessWidget {
   final Auction bid;
@@ -29,20 +30,21 @@ class MyBidsListItem extends StatelessWidget {
         subTitle: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Price : ' + bid.basePrice.toString()),
+            Text('price'.tr + ' : ' + bid.basePrice.toString()),
             Visibility(
                 visible: type == MyBidsType.Ongoing || type == MyBidsType.Lost,
-                child: Text('Latest Bid : ' + bid.latestBid.toString())),
+                child:
+                    Text('latest_bid'.tr + ' : ' + bid.latestBid.toString())),
             Visibility(
                 visible: type == MyBidsType.Ongoing,
                 child: Column(
                   children: [
-                    Text('Remaining Time :'),
+                    Text('remaining_time'.tr + ' :'),
                     CountdownTimer(
                       endTime: getTimeFromFireStoreTimeStamp(bid.remainingTime)
                               .millisecondsSinceEpoch +
                           1000 * 30,
-                      endWidget: Text('Expired'),
+                      endWidget: Text('expired'.tr),
                     ),
                   ],
                 )),
@@ -56,7 +58,7 @@ class MyBidsListItem extends StatelessWidget {
             visible: type != MyBidsType.Lost,
             child: GFButton(
               onPressed: () {},
-              text: 'View',
+              text: 'view'.tr,
             ),
           )
         ],

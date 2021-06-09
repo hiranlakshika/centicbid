@@ -39,9 +39,9 @@ class AuthController extends GetxController {
           email: email, password: password);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        showErrorToast('No user found for that email.');
+        showErrorToast('user_not_found'.tr);
       } else if (e.code == 'wrong-password') {
-        showErrorToast('Wrong password provided for that user.');
+        showErrorToast('wrong_pw'.tr);
       }
     }
   }
@@ -53,9 +53,9 @@ class AuthController extends GetxController {
           email: email, password: password);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
-        showErrorToast('The password provided is too weak.');
+        showErrorToast('weak_pw'.tr);
       } else if (e.code == 'email-already-in-use') {
-        showErrorToast('The account already exists for that email.');
+        showErrorToast('account_already_exists'.tr);
       }
     } catch (e) {
       print(e);
@@ -69,7 +69,7 @@ class AuthController extends GetxController {
       showErrorToast(e.message.toString());
       return null;
     } catch (e) {
-      showErrorToast("Unknown error");
+      showErrorToast("unknown_error".tr);
       return null;
     }
   }

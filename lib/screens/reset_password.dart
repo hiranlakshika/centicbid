@@ -2,6 +2,7 @@ import 'package:centicbid/controllers/auth_controller.dart';
 import 'package:centicbid/util.dart';
 import 'package:flutter/material.dart';
 import 'package:the_validator/the_validator.dart';
+import 'package:get/get.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({Key? key}) : super(key: key);
@@ -41,7 +42,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               prefixIcon: Icon(
                 Icons.email,
               ),
-              hintText: 'Email',
+              hintText: 'email'.tr,
             ),
           ),
         ),
@@ -58,12 +59,12 @@ class _ResetPasswordState extends State<ResetPassword> {
           if (_formKey.currentState!.validate()) {
             setState(() => _loading = true);
             await authController.resetPassword(_email);
-            showInfoToast("A password reset link has been sent to $_email");
+            showInfoToast('password_reset_msg'.tr + " $_email");
             setState(() => _loading = false);
           }
         },
         child: Text(
-          'Reset',
+          'reset'.tr,
           style: TextStyle(
             color: Colors.white,
             letterSpacing: 1.5,
@@ -80,7 +81,7 @@ class _ResetPasswordState extends State<ResetPassword> {
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
-        title: Text('Reset Password'),
+        title: Text('reset_password'.tr),
       ),
       body: _loading
           ? getLoadingDualRing()

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../util.dart';
 import 'my_bids_list.dart';
+import 'package:get/get.dart';
 
 class MyBids extends StatelessWidget {
   const MyBids({Key? key}) : super(key: key);
@@ -15,9 +16,9 @@ class MyBids extends StatelessWidget {
           centerTitle: true,
           bottom: TabBar(
             tabs: [
-              Tab(text: 'Ongoing'),
-              Tab(text: 'Won'),
-              Tab(text: 'Lost'),
+              Tab(text: 'ongoing'.tr),
+              Tab(text: 'won'.tr),
+              Tab(text: 'lost'.tr),
             ],
           ),
         ),

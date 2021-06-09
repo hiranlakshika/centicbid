@@ -49,7 +49,7 @@ class Home extends StatelessWidget {
                 if (_controller.firebaseUser.value == null) {
                   return ListTile(
                     title: Text(
-                      'Sign in',
+                      'sign_in'.tr,
                     ),
                     leading: Icon(
                       Icons.login,
@@ -64,7 +64,7 @@ class Home extends StatelessWidget {
                 if (_controller.firebaseUser.value != null) {
                   return ListTile(
                     title: Text(
-                      'My Bids',
+                      'my_bids'.tr,
                     ),
                     leading: Icon(
                       Icons.monetization_on_outlined,
@@ -79,14 +79,14 @@ class Home extends StatelessWidget {
                 if (_controller.firebaseUser.value != null) {
                   return ListTile(
                     title: Text(
-                      'Sign out',
+                      'sign_out'.tr,
                     ),
                     leading: Icon(
                       Icons.logout,
                     ),
                     onTap: () async {
                       await _controller.signOut();
-                      showInfoToast('User signed out');
+                      showInfoToast('user_signed_out'.tr);
                     },
                   );
                 } else {

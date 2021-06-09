@@ -23,7 +23,7 @@ class _SignInState extends State<SignIn> {
   bool _loading = false;
   bool _termsAndConditions = false;
   bool _isSignup = false;
-  String _appBarTitle = 'Sign in';
+  String _appBarTitle = 'sign_in'.tr;
 
   @override
   void initState() {
@@ -56,7 +56,7 @@ class _SignInState extends State<SignIn> {
               prefixIcon: Icon(
                 Icons.email,
               ),
-              hintText: 'Email',
+              hintText: 'email'.tr,
             ),
           ),
         ),
@@ -73,7 +73,7 @@ class _SignInState extends State<SignIn> {
           alignment: Alignment.center,
           height: 60.0,
           child: TextFormField(
-            validator: (val) => val!.isEmpty ? "PLease enter a password" : null,
+            validator: (val) => val!.isEmpty ? "enter_pw".tr : null,
             onChanged: (val) {
               setState(() => _password = val);
             },
@@ -85,7 +85,7 @@ class _SignInState extends State<SignIn> {
               prefixIcon: Icon(
                 Icons.lock,
               ),
-              hintText: 'Password',
+              hintText: 'password'.tr,
             ),
           ),
         ),
@@ -114,7 +114,7 @@ class _SignInState extends State<SignIn> {
               ),
             ),
             Text(
-              'Remember me',
+              'remember_me'.tr,
             ),
           ],
         ),
@@ -134,7 +134,7 @@ class _SignInState extends State<SignIn> {
               dynamic result =
                   await authController.signInWithEmail(_email, _password);
               if (result != null) {
-                showInfoToast("Signed in successfully");
+                showInfoToast("signed_in_success".tr);
                 Get.off(() => Home());
               } else {
                 setState(() => _loading = false);
@@ -142,7 +142,7 @@ class _SignInState extends State<SignIn> {
             }
           },
           child: Text(
-            'Sign in',
+            'sign_in'.tr,
             style: TextStyle(
               color: Colors.white,
               letterSpacing: 1.5,
@@ -169,21 +169,21 @@ class _SignInState extends State<SignIn> {
                 dynamic result =
                     await authController.registerWithEmail(_email, _password);
                 if (result != null) {
-                  showInfoToast("Successfully Registered");
+                  showInfoToast("reg_success".tr);
                   setState(() {
                     _loading = false;
                     _isSignup = false;
-                    _appBarTitle = 'Sign in';
+                    _appBarTitle = 'sign_in'.tr;
                   });
                 }
               } else {
-                showErrorToast("You must agree to the terms and conditions");
+                showErrorToast("terms".tr);
                 setState(() => _loading = false);
               }
             }
           },
           child: Text(
-            'Sign up',
+            'sign_up'.tr,
             style: TextStyle(
               color: Colors.white,
               letterSpacing: 1.5,
@@ -204,7 +204,7 @@ class _SignInState extends State<SignIn> {
         children: [
           RichText(
             text: TextSpan(
-              text: 'Have an Account? ',
+              text: 'have_account'.tr + ' ',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 18.0,
@@ -216,11 +216,11 @@ class _SignInState extends State<SignIn> {
             onPressed: () {
               setState(() {
                 _isSignup = false;
-                _appBarTitle = 'Sign in';
+                _appBarTitle = 'sign_in'.tr;
               });
             },
             child: Text(
-              'Sign In',
+              'sign_in'.tr,
               style: TextStyle(
                 fontSize: 18.0,
               ),
@@ -239,7 +239,7 @@ class _SignInState extends State<SignIn> {
         child: TextButton(
           onPressed: () => Get.to(() => ResetPassword()),
           child: Text(
-            'Forgot Password?',
+            'forgot_pw'.tr,
           ),
         ),
       ),
@@ -254,7 +254,7 @@ class _SignInState extends State<SignIn> {
         children: [
           RichText(
             text: TextSpan(
-              text: 'Don\'t have an Account? ',
+              text: 'dont_have_acc'.tr + ' ',
               style: TextStyle(
                 color: Colors.black,
                 fontSize: 18.0,
@@ -266,11 +266,11 @@ class _SignInState extends State<SignIn> {
             onPressed: () {
               setState(() {
                 _isSignup = true;
-                _appBarTitle = 'Sign up';
+                _appBarTitle = 'sign_up'.tr;
               });
             },
             child: Text(
-              'Sign Up',
+              'sign_up'.tr,
               style: TextStyle(
                 fontSize: 18.0,
               ),
@@ -303,11 +303,11 @@ class _SignInState extends State<SignIn> {
             RichText(
                 text: TextSpan(children: <TextSpan>[
               TextSpan(
-                  text: "I agree to",
+                  text: "agree".tr,
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold)),
               TextSpan(
-                  text: " terms and conditions",
+                  text: " " + "terms_con".tr,
                   style: TextStyle(
                       color: Colors.black, fontWeight: FontWeight.bold),
                   recognizer: TapGestureRecognizer()..onTap = () {})
@@ -333,9 +333,8 @@ class _SignInState extends State<SignIn> {
             alignment: Alignment.centerLeft,
             height: 60.0,
             child: TextFormField(
-              validator: (val) => Validator.isEqualTo(_password, val)
-                  ? null
-                  : "Password mis match",
+              validator: (val) =>
+                  Validator.isEqualTo(_password, val) ? null : "pw_mismatch".tr,
               obscureText: true,
               decoration: InputDecoration(
                 border: OutlineInputBorder(
@@ -344,7 +343,7 @@ class _SignInState extends State<SignIn> {
                 prefixIcon: Icon(
                   Icons.lock,
                 ),
-                hintText: 'Confirm Password',
+                hintText: 'confirm_pw'.tr,
               ),
             ),
           ),

@@ -38,7 +38,7 @@ class AuctionListItem extends StatelessWidget {
               height: 5.0,
             ),
             Text(
-              'Price :' + auction.basePrice.toString(),
+              'price'.tr + ' :' + auction.basePrice.toString(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -46,7 +46,7 @@ class AuctionListItem extends StatelessWidget {
               height: 5.0,
             ),
             Text(
-              'Latest Bid :' + auction.latestBid!.toString(),
+              'latest_bid'.tr + ' :' + auction.latestBid!.toString(),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
@@ -57,7 +57,7 @@ class AuctionListItem extends StatelessWidget {
               endTime: getTimeFromFireStoreTimeStamp(auction.remainingTime)
                       .millisecondsSinceEpoch +
                   1000 * 30,
-              endWidget: Text('Expired'),
+              endWidget: Text('expired'.tr),
             )
           ],
         ),
@@ -69,7 +69,7 @@ class AuctionListItem extends StatelessWidget {
         ),
         icon: ElevatedButton(
           onPressed: () => Get.to(() => ItemDetails(auction)),
-          child: Text('Bid Now'),
+          child: Text('bid_now'.tr),
         ),
       ),
     );
