@@ -1,3 +1,4 @@
+import 'package:centicbid/controllers/auth_controller.dart';
 import 'package:centicbid/db/firestore_util.dart';
 import 'package:centicbid/db/local_db.dart';
 import 'package:centicbid/models/auction.dart';
@@ -9,6 +10,7 @@ import 'package:centicbid/util.dart';
 class MyBidsList extends StatelessWidget {
   final MyBidsType type;
   final db = DatabaseHelper();
+  final AuthController _authController = AuthController.to;
 
   MyBidsList(this.type, {Key? key}) : super(key: key);
 

@@ -16,7 +16,7 @@ class SignIn extends StatefulWidget {
 }
 
 class _SignInState extends State<SignIn> {
-  late String _email, _password;
+  late String _email, _password, _userName;
   final _formKey = GlobalKey<FormState>();
   late AuthController authController;
   bool _rememberMe = false;
@@ -29,6 +29,41 @@ class _SignInState extends State<SignIn> {
   void initState() {
     authController = AuthController.to;
     super.initState();
+  }
+
+  Widget _buildUserNameTF() {
+    return Visibility(
+      visible: _isSignup,
+      child: Column(
+        children: <Widget>[
+          SizedBox(height: 10.0),
+          Container(
+            height: 60.0,
+            child: TextFormField(
+              validator: (val) =>
+                  _userName.isEmpty ? "uname_required".tr : null,
+              onChanged: (val) {
+                setState(() => _userName = val);
+              },
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderSide: BorderSide(
+                    width: 1.0,
+                    color: Colors.blue,
+                  ),
+                ),
+                contentPadding: EdgeInsets.only(top: 14.0),
+                prefixIcon: Icon(
+                  Icons.person,
+                ),
+                hintText: 'name'.tr,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   Widget _buildEmailTF() {
@@ -166,8 +201,8 @@ class _SignInState extends State<SignIn> {
             if (_formKey.currentState!.validate()) {
               if (_termsAndConditions) {
                 setState(() => _loading = true);
-                dynamic result =
-                    await authController.registerWithEmail(_email, _password);
+                dynamic result = await authController.registerWithEmail(
+                    _email, _password, _userName);
                 if (result != null) {
                   showInfoToast("reg_success".tr);
                   setState(() {
@@ -368,6 +403,7 @@ class _SignInState extends State<SignIn> {
                 child: SafeArea(
                   child: Column(
                     children: [
+                      _buildUserNameTF(),
                       _buildEmailTF(),
                       SizedBox(
                         height: 8.0,

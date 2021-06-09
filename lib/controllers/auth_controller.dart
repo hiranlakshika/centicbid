@@ -47,7 +47,7 @@ class AuthController extends GetxController {
   }
 
   Future<UserCredential?> registerWithEmail(
-      String email, String password) async {
+      String email, String password, String userName) async {
     try {
       return await _auth.createUserWithEmailAndPassword(
           email: email, password: password);
@@ -59,6 +59,10 @@ class AuthController extends GetxController {
       }
     } catch (e) {
       print(e);
+    } finally {
+      if (firebaseUser.value != null) {
+        await firebaseUser.value!.updateProfile(displayName: userName);
+      }
     }
   }
 

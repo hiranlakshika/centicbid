@@ -27,6 +27,7 @@ class _ItemDetailsState extends State<ItemDetails> {
   double _bidValue = 0;
   AuthController _controller = AuthController.to;
   late DateTime _remainingTime;
+  late FirestoreController _firestoreControllers;
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -121,10 +122,9 @@ class _ItemDetailsState extends State<ItemDetails> {
   }
 
   addFirestoreBidRecord(Bid bid) async {
-    FirestoreController fs = Get.put(FirestoreController());
     try {
-      await fs.addBid(bid);
-      await fs.updateBidValue(_bidValue, widget.auction.id);
+      await _firestoreControllers.addBid(bid);
+      await _firestoreControllers.updateBidValue(_bidValue, widget.auction.id);
     } catch (e) {
       print(e);
     }
@@ -164,9 +164,11 @@ class _ItemDetailsState extends State<ItemDetails> {
                               _controller.firebaseUser.value!.email.toString(),
                           auctionId: widget.auction.id,
                           bid: _bidValue);
-                      await addLocalAuctionRecord(widget.auction, _bidValue);
-                      await addLocalBidRecord(bid);
-                      await addFirestoreBidRecord(bid);
+                      // await addLocalAuctionRecord(widget.auction, _bidValue);
+                      // await addLocalBidRecord(bid);
+                      // await addFirestoreBidRecord(bid);
+                      await _firestoreControllers
+                          .getBids(_controller.firebaseUser.value!.email);
                     }
                     Get.back();
                   },
@@ -181,6 +183,7 @@ class _ItemDetailsState extends State<ItemDetails> {
   void initState() {
     _remainingTime =
         getTimeFromFireStoreTimeStamp(widget.auction.remainingTime);
+    _firestoreControllers = Get.put(FirestoreController());
     super.initState();
   }
 

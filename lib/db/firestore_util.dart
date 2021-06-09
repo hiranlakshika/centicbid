@@ -26,6 +26,19 @@ class FirestoreController {
         .then((value) => print('Auction updated'))
         .catchError((error) => print("Failed to add bid: $error"));
   }
+
+  getBids(String? userId) async {
+    await FirebaseFirestore.instance
+        .collection('bids')
+        .where('user_id', isEqualTo: userId)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
+        print(doc["bid"]);
+        print('');
+      });
+    });
+  }
 }
 
 Auction getAuctionFromSnapshot(DocumentSnapshot document) {
@@ -36,8 +49,9 @@ Auction getAuctionFromSnapshot(DocumentSnapshot document) {
       basePrice: (document.data()! as Map)['base_price'],
       latestBid: (document.data()! as Map)['latest_bid'],
       images: (document.data()! as Map)['images'],
-      remainingTime:
-          (document.data()! as Map)['remaining_time'].microsecondsSinceEpoch.toString());
+      remainingTime: (document.data()! as Map)['remaining_time']
+          .microsecondsSinceEpoch
+          .toString());
 }
 
 DateTime getTimeFromFireStoreTimeStamp(String t) {
