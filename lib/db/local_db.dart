@@ -31,13 +31,10 @@ class DatabaseHelper {
       join(path, _databaseName),
       onCreate: (database, version) async {
         await database.execute(
-          "CREATE TABLE bid(id TEXT PRIMARY KEY, user_id TEXT NOT NULL, auction_id TEXT NOT NULL, bid REAL NOT NULL)",
-        );
-        await database.execute(
           "CREATE TABLE auction(id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL, base_price REAL NOT NULL, latest_bid REAL NOT NULL, remaining_time TEXT NOT NULL)",
         );
         await database.execute(
-          "CREATE TABLE image(id INTEGER PRIMARY KEY AUTOINCREMENT, image_url TEXT NOT NULL, auction_id TEXT NOT NULL)",
+          "CREATE TABLE image(image_url TEXT NOT NULL , auction_id TEXT NOT NULL, PRIMARY KEY(image_url, auction_id))",
         );
       },
       version: _databaseVersion,
@@ -49,31 +46,27 @@ class DatabaseHelper {
     var databasesPath = await getDatabasesPath();
     var path = join(databasesPath, _databaseName);
     await db!.close();
+    _database = null;
     await deleteDatabase(path);
-  }
-
-  Future<int> insertBid(List<Bid> bids) async {
-    int result = 0;
-    final Database? db = await database;
-    for (var bid in bids) {
-      result = await db!.insert('bid', bid.toMap());
-    }
-    return result;
   }
 
   Future<dynamic> insertAuction(Auction auction, double newBid) async {
     final Database? db = await database;
     final batch = db!.batch();
-    batch.insert('auction', {
-      'id': auction.id,
-      'title': auction.title,
-      'description': auction.description,
-      'base_price': auction.basePrice,
-      'latest_bid': newBid,
-      'remaining_time': auction.remainingTime,
-    });
+    batch.insert(
+        'auction',
+        {
+          'id': auction.id,
+          'title': auction.title,
+          'description': auction.description,
+          'base_price': auction.basePrice,
+          'latest_bid': newBid,
+          'remaining_time': auction.remainingTime,
+        },
+        conflictAlgorithm: ConflictAlgorithm.replace);
     for (var image in auction.images!) {
-      batch.insert('image', {'image_url': image, 'auction_id': auction.id});
+      batch.insert('image', {'image_url': image, 'auction_id': auction.id},
+          conflictAlgorithm: ConflictAlgorithm.replace);
     }
 
     return await batch.commit();
@@ -117,11 +110,5 @@ class DatabaseHelper {
     final db = await database;
     return await db!.update('auction', auction.toMap(),
         where: 'id = ?', whereArgs: [auction.id]);
-  }
-
-  Future<int> updateBid(Bid bid) async {
-    final db = await database;
-    return await db!
-        .update('bid', bid.toMap(), where: 'id = ?', whereArgs: [bid.id]);
   }
 }

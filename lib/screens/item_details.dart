@@ -87,17 +87,6 @@ class _ItemDetailsState extends State<ItemDetails> {
     );
   }
 
-  addLocalBidRecord(Bid bid) async {
-    final db = DatabaseHelper();
-
-    List<Bid> bidList = [bid];
-    try {
-      await db.database.whenComplete(() => db.insertBid(bidList));
-    } on DatabaseException {
-      showErrorToast('error'.tr);
-    }
-  }
-
   addLocalAuctionRecord(Auction auction, double newBid) async {
     final db = DatabaseHelper();
     try {
@@ -157,15 +146,10 @@ class _ItemDetailsState extends State<ItemDetails> {
                       showErrorToast('bid_value_should_be_greater'.tr);
                     } else {
                       Bid bid = Bid(
-                          id: _controller.firebaseUser.value!.uid +
-                              widget.auction.id +
-                              (_bidValue.toString()),
-                          userId:
-                              _controller.firebaseUser.value!.email.toString(),
+                          userId: _controller.firebaseUser.value!.uid,
                           auctionId: widget.auction.id,
                           bid: _bidValue);
                       await addLocalAuctionRecord(widget.auction, _bidValue);
-                      await addLocalBidRecord(bid);
                       await addFirestoreBidRecord(bid);
                     }
                     Get.back();

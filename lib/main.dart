@@ -9,7 +9,7 @@ import 'package:get/get.dart';
 main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  Get.put<AuthController>(AuthController());
+  // Get.put<AuthController>(AuthController());
   runApp(GetMaterialApp(
     home: Home(),
     locale: window.locale,

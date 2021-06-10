@@ -1,3 +1,4 @@
+import 'package:centicbid/db/firestore_util.dart';
 import 'package:centicbid/db/local_db.dart';
 import 'package:centicbid/util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -43,6 +44,9 @@ class AuthController extends GetxController {
         var db = DatabaseHelper();
         await db.database
             .whenComplete(() async => await db.deleteLocalDatabase());
+        FirestoreController firestoreController =
+            Get.put(FirestoreController());
+        await firestoreController.getBids(firebaseUser.value!.uid);
         return userCredential;
       }
     } on FirebaseAuthException catch (e) {
