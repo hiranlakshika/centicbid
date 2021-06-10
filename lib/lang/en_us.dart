@@ -45,4 +45,5 @@ const Map<String, String> enUS = {
   'pw_mismatch': 'Password mis match',
   'uname_required': 'User Name cannot be empty',
   'name': 'Name',
+  'ok': 'OK',
 };

@@ -57,7 +57,9 @@ class Home extends StatelessWidget {
                     leading: Icon(
                       Icons.login,
                     ),
-                    onTap: () => Get.to(() => SignIn()),
+                    onTap: () => Get.to(() => SignIn(
+                          fromHome: true,
+                        )),
                   );
                 } else {
                   return Container();

@@ -31,7 +31,7 @@ class DatabaseHelper {
       join(path, _databaseName),
       onCreate: (database, version) async {
         await database.execute(
-          "CREATE TABLE auction(id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL, base_price REAL NOT NULL, latest_bid REAL NOT NULL, remaining_time TEXT NOT NULL)",
+          "CREATE TABLE auction(id TEXT PRIMARY KEY, title TEXT NOT NULL, description TEXT NOT NULL, uid TEXT, base_price REAL NOT NULL, latest_bid REAL NOT NULL, remaining_time TEXT NOT NULL)",
         );
         await database.execute(
           "CREATE TABLE image(image_url TEXT NOT NULL , auction_id TEXT NOT NULL, PRIMARY KEY(image_url, auction_id))",
@@ -50,7 +50,8 @@ class DatabaseHelper {
     await deleteDatabase(path);
   }
 
-  Future<dynamic> insertAuction(Auction auction, double newBid) async {
+  Future<dynamic> insertAuction(
+      Auction auction, double newBid, String? uid) async {
     final Database? db = await database;
     final batch = db!.batch();
     batch.insert(
@@ -59,6 +60,7 @@ class DatabaseHelper {
           'id': auction.id,
           'title': auction.title,
           'description': auction.description,
+          'uid': uid,
           'base_price': auction.basePrice,
           'latest_bid': newBid,
           'remaining_time': auction.remainingTime,

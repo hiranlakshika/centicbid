@@ -9,7 +9,9 @@ import 'package:the_validator/the_validator.dart';
 import '../util.dart';
 
 class SignIn extends StatefulWidget {
-  const SignIn({Key? key}) : super(key: key);
+  final bool fromHome;
+
+  const SignIn({Key? key, required this.fromHome}) : super(key: key);
 
   @override
   _SignInState createState() => _SignInState();
@@ -128,35 +130,6 @@ class _SignInState extends State<SignIn> {
     );
   }
 
-  Widget _buildRememberMeCheckbox() {
-    return Visibility(
-      visible: !_isSignup,
-      child: Container(
-        height: 20.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Theme(
-              data: ThemeData(unselectedWidgetColor: Colors.blue),
-              child: Checkbox(
-                value: _rememberMe,
-                checkColor: Colors.white,
-                onChanged: (value) {
-                  setState(() {
-                    _rememberMe = value!;
-                  });
-                },
-              ),
-            ),
-            Text(
-              'remember_me'.tr,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
   Widget _buildLoginBtn() {
     return Visibility(
       visible: !_isSignup,
@@ -170,7 +143,11 @@ class _SignInState extends State<SignIn> {
                   await authController.signInWithEmail(_email, _password);
               if (result != null) {
                 showInfoToast("signed_in_success".tr);
-                Get.off(() => Home());
+                if (widget.fromHome) {
+                  Get.off(() => Home());
+                } else {
+                  Get.back();
+                }
               } else {
                 setState(() => _loading = false);
               }
@@ -419,7 +396,6 @@ class _SignInState extends State<SignIn> {
                           height: 8.0,
                         ),
                       ),
-                      _buildRememberMeCheckbox(),
                       _buildForgotPasswordBtn(),
                       _buildLoginBtn(),
                       _buildTermsCheckbox(),

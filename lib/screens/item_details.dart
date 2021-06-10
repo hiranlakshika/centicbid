@@ -93,12 +93,14 @@ class _ItemDetailsState extends State<ItemDetails> {
       await db.database.whenComplete(() async {
         final result = await db.retrieveAuction(auction.id);
         if (result.length == 0) {
-          await db.insertAuction(auction, newBid);
+          await db.insertAuction(
+              auction, newBid, _controller.firebaseUser.value!.uid);
         } else {
           Auction newAuction = Auction(
               id: auction.id,
               title: auction.title,
               description: auction.description,
+              uid: _controller.firebaseUser.value!.uid,
               basePrice: auction.basePrice,
               remainingTime: auction.remainingTime,
               latestBid: newBid);
@@ -113,7 +115,8 @@ class _ItemDetailsState extends State<ItemDetails> {
   addFirestoreBidRecord(Bid bid) async {
     try {
       await _firestoreControllers.addBid(bid);
-      await _firestoreControllers.updateBidValue(_bidValue, widget.auction.id);
+      await _firestoreControllers.updateAuctionValues(
+          _bidValue, widget.auction.id, _controller.firebaseUser.value!.uid);
     } catch (e) {
       print(e);
     }
@@ -139,7 +142,7 @@ class _ItemDetailsState extends State<ItemDetails> {
             actions: <Widget>[
               Center(
                 child: ElevatedButton(
-                  child: Text('OK'),
+                  child: Text('ok'.tr),
                   onPressed: () async {
                     if (_bidValue <= widget.auction.latestBid ||
                         _bidValue < widget.auction.basePrice) {
@@ -217,7 +220,9 @@ class _ItemDetailsState extends State<ItemDetails> {
               onPressed: () {
                 if (_controller.firebaseUser.value == null) {
                   showInfoToast('user_needs_to_sign_in'.tr);
-                  Get.to(() => SignIn());
+                  Get.to(() => SignIn(
+                        fromHome: false,
+                      ));
                 } else {
                   _displayTextInputDialog(context);
                 }

@@ -4,6 +4,7 @@ class Auction {
   final String id;
   final String title;
   final String description;
+  final String? uid;
   final dynamic basePrice;
   final dynamic latestBid;
   final List<dynamic>? images;
@@ -13,6 +14,7 @@ class Auction {
       {required this.id,
       required this.title,
       required this.description,
+      required this.uid,
       required this.basePrice,
       this.latestBid,
       this.images,
@@ -22,6 +24,7 @@ class Auction {
       : id = res['id'],
         title = res['title'],
         description = res['description'],
+        uid = res['uid'],
         basePrice = res['base_price'],
         latestBid = res['latest_bid'],
         images = res['images'],
@@ -32,6 +35,7 @@ class Auction {
       'id': id,
       'title': title,
       'description': description,
+      'uid': uid,
       'base_price': basePrice,
       'latest_bid': latestBid,
       'remaining_time': remainingTime

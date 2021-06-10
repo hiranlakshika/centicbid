@@ -67,9 +67,13 @@ class AuctionListItem extends StatelessWidget {
           overflow: TextOverflow.ellipsis,
           style: titleTextStyle,
         ),
-        icon: ElevatedButton(
-          onPressed: () => Get.to(() => ItemDetails(auction)),
-          child: Text('bid_now'.tr),
+        icon: Visibility(
+          visible: getTimeFromFireStoreTimeStamp(auction.remainingTime)
+              .isAfter(DateTime.now()),
+          child: ElevatedButton(
+            onPressed: () => Get.to(() => ItemDetails(auction)),
+            child: Text('bid_now'.tr),
+          ),
         ),
       ),
     );

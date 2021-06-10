@@ -21,10 +21,10 @@ class FirestoreController {
         .catchError((error) => print("Failed to add bid: $error"));
   }
 
-  Future<void> updateBidValue(double bid, String documentId) {
+  Future<void> updateAuctionValues(double bid, String documentId, String uid) {
     return auction
         .doc(documentId)
-        .update({'latest_bid': bid})
+        .update({'latest_bid': bid, 'uid': uid})
         .then((value) => print('Auction updated'))
         .catchError((error) => print("Failed to add bid: $error"));
   }
@@ -37,11 +37,9 @@ class FirestoreController {
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) async {
-        print(doc["bid"]);
-        print(doc["auction_id"]);
         Auction? auc = await getAuction(doc["auction_id"]);
         var output = db.database.whenComplete(() async => await db
-            .insertAuction(auc!, doc["bid"])
+            .insertAuction(auc!, doc["bid"], auc.uid)
             .onError((error, stackTrace) => print(error)));
       });
     });
@@ -67,6 +65,7 @@ Auction getAuctionFromSnapshot(DocumentSnapshot document) {
       id: document.id,
       title: (document.data()! as Map)['title'],
       description: (document.data()! as Map)['description'],
+      uid: (document.data()! as Map)['uid'],
       basePrice: (document.data()! as Map)['base_price'],
       latestBid: (document.data()! as Map)['latest_bid'],
       images: (document.data()! as Map)['images'],

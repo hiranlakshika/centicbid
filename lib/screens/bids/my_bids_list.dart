@@ -30,6 +30,7 @@ class MyBidsList extends StatelessWidget {
             id: auction.id,
             title: auction.title,
             description: auction.description,
+            uid: auction.uid,
             basePrice: auction.basePrice,
             remainingTime: auction.remainingTime,
             latestBid: auction.latestBid,
@@ -49,13 +50,15 @@ class MyBidsList extends StatelessWidget {
         modifiedList = bids
             .where((element) =>
                 getTimeFromFireStoreTimeStamp(element.remainingTime)
-                    .isBefore(DateTime.now()))
+                    .isBefore(DateTime.now()) &&
+                element.uid == _authController.firebaseUser.value!.uid)
             .toList();
       } else {
         modifiedList = bids
             .where((element) =>
                 getTimeFromFireStoreTimeStamp(element.remainingTime)
-                    .isBefore(DateTime.now()))
+                    .isBefore(DateTime.now()) &&
+                element.uid != _authController.firebaseUser.value!.uid)
             .toList();
       }
       return modifiedList;
