@@ -1,3 +1,4 @@
+import 'package:centicbid/db/local_db.dart';
 import 'package:centicbid/models/auction.dart';
 import 'package:centicbid/models/bid.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -27,17 +28,35 @@ class FirestoreController {
         .catchError((error) => print("Failed to add bid: $error"));
   }
 
-  getBids(String? userId) async {
+  Future getBids(String? userId) async {
+    var db = DatabaseHelper();
     await FirebaseFirestore.instance
         .collection('bids')
         .where('user_id', isEqualTo: userId)
         .get()
         .then((QuerySnapshot querySnapshot) {
-      querySnapshot.docs.forEach((doc) {
+      querySnapshot.docs.forEach((doc) async {
         print(doc["bid"]);
-        print('');
+        print(doc["auction_id"]);
+        Auction? auc = await getAuction(doc["auction_id"]);
+        var output = db.database
+            .whenComplete(() async => await db.insertAuction(auc!, doc["bid"]));
       });
     });
+  }
+
+  Future<Auction?> getAuction(String documentId) async {
+    Auction? auc;
+
+    await auction
+        .doc(documentId)
+        .get()
+        .then((DocumentSnapshot documentSnapshot) {
+      if (documentSnapshot.exists) {
+        auc = getAuctionFromSnapshot(documentSnapshot);
+      }
+    });
+    return auc;
   }
 }
 

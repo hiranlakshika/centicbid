@@ -164,11 +164,9 @@ class _ItemDetailsState extends State<ItemDetails> {
                               _controller.firebaseUser.value!.email.toString(),
                           auctionId: widget.auction.id,
                           bid: _bidValue);
-                      // await addLocalAuctionRecord(widget.auction, _bidValue);
-                      // await addLocalBidRecord(bid);
-                      // await addFirestoreBidRecord(bid);
-                      await _firestoreControllers
-                          .getBids(_controller.firebaseUser.value!.email);
+                      await addLocalAuctionRecord(widget.auction, _bidValue);
+                      await addLocalBidRecord(bid);
+                      await addFirestoreBidRecord(bid);
                     }
                     Get.back();
                   },

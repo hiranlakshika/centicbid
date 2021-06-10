@@ -1,3 +1,4 @@
+import 'package:centicbid/db/local_db.dart';
 import 'package:centicbid/util.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/services.dart';
@@ -34,9 +35,16 @@ class AuthController extends GetxController {
 
   //Method to handle user sign in using email and password
   Future<UserCredential?> signInWithEmail(String email, String password) async {
+    UserCredential userCredential;
     try {
-      return await _auth.signInWithEmailAndPassword(
+      userCredential = await _auth.signInWithEmailAndPassword(
           email: email, password: password);
+      if (firebaseUser.value != null) {
+        var db = DatabaseHelper();
+        await db.database
+            .whenComplete(() async => await db.deleteLocalDatabase());
+        return userCredential;
+      }
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
         showErrorToast('user_not_found'.tr);

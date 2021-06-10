@@ -28,14 +28,14 @@ class Home extends StatelessWidget {
                     currentAccountPicture:
                         Image.asset('assets/images/profile.png'),
                     accountName: Text(
-                      _controller.firebaseUser.value!.displayName!,
+                      _controller.firebaseUser.value!.displayName ?? '',
                       style: TextStyle(
                         color: Colors.black,
                       ),
                     ),
                     decoration: BoxDecoration(),
                     accountEmail: Text(
-                _controller.firebaseUser.value!.email.toString(),
+                      _controller.firebaseUser.value!.email.toString(),
                       style: TextStyle(
                         color: Colors.black,
                       ),

@@ -44,6 +44,14 @@ class DatabaseHelper {
     );
   }
 
+  Future deleteLocalDatabase() async {
+    final Database? db = await database;
+    var databasesPath = await getDatabasesPath();
+    var path = join(databasesPath, _databaseName);
+    await db!.close();
+    await deleteDatabase(path);
+  }
+
   Future<int> insertBid(List<Bid> bids) async {
     int result = 0;
     final Database? db = await database;
