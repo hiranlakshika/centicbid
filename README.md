@@ -1,6 +1,6 @@
-# centicbid
+# CenticBids
 
-A new Flutter project.
+CenticBids is an online bidding platform which allow users to bid for online auctions.
 
 ## Getting Started
 
