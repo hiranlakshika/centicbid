@@ -1,4 +1,6 @@
 import 'package:centicbid/controllers/auth_controller.dart';
+import 'package:centicbid/db/firestore_util.dart';
+import 'package:centicbid/screens/item_details.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:getwidget/getwidget.dart';
@@ -8,6 +10,7 @@ import '../../util.dart';
 class NotificationsList extends StatelessWidget {
   NotificationsList({Key? key}) : super(key: key);
   final AuthController _authController = AuthController.to;
+  final FirestoreController _firestoreController = FirestoreController.to;
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +36,13 @@ class NotificationsList extends StatelessWidget {
                   return Card(
                     elevation: 1.0,
                     child: GFListTile(
+                      onTap: () async {
+                        String auctionId =
+                            (document.data()! as Map)['auction_id'];
+                        var auction =
+                            await _firestoreController.getAuction(auctionId);
+                        Get.to(() => ItemDetails(auction!));
+                      },
                       titleText: (document.data()! as Map)['title'],
                       subTitleText: (document.data()! as Map)['body'],
                     ),
