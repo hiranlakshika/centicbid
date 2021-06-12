@@ -201,27 +201,33 @@ class _ItemDetailsState extends State<ItemDetails> {
         title: Text('item_details'.tr),
         centerTitle: true,
       ),
-      body: Column(
-        children: <Widget>[
+      body: ListView(
+        children: [
           carousel(),
           carouselIndicator(),
           SizedBox(
             height: 10.0,
           ),
-          Text(
-            widget.auction.title,
-            style: titleTextStyle,
-          ),
-          SizedBox(
-            height: 10.0,
-          ),
-          Text('price'.tr + ' : ' + widget.auction.basePrice.toString()),
-          SizedBox(
-            height: 10.0,
-          ),
-          Text('latest_bid'.tr + ' : ' + widget.auction.latestBid!.toString()),
-          SizedBox(
-            height: 10.0,
+          Column(
+            children: [
+              Text(
+                widget.auction.title,
+                style: titleTextStyle,
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              Text('price'.tr + ' : ' + widget.auction.basePrice.toString()),
+              SizedBox(
+                height: 10.0,
+              ),
+              Text('latest_bid'.tr +
+                  ' : ' +
+                  widget.auction.latestBid!.toString()),
+              SizedBox(
+                height: 10.0,
+              ),
+            ],
           ),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -238,18 +244,21 @@ class _ItemDetailsState extends State<ItemDetails> {
           ),
           Visibility(
             visible: _remainingTime.isAfter(DateTime.now()),
-            child: ElevatedButton(
-              onPressed: () {
-                if (_authController.firebaseUser.value == null) {
-                  showInfoToast('user_needs_to_sign_in'.tr);
-                  Get.to(() => SignIn(
-                        fromHome: false,
-                      ));
-                } else {
-                  _displayTextInputDialog(context);
-                }
-              },
-              child: Text('place_bid'.tr),
+            child: Container(
+              alignment: Alignment.center,
+              child: ElevatedButton(
+                onPressed: () {
+                  if (_authController.firebaseUser.value == null) {
+                    showInfoToast('user_needs_to_sign_in'.tr);
+                    Get.to(() => SignIn(
+                          fromHome: false,
+                        ));
+                  } else {
+                    _displayTextInputDialog(context);
+                  }
+                },
+                child: Text('place_bid'.tr),
+              ),
             ),
           ),
         ],

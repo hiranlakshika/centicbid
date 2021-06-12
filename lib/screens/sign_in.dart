@@ -21,7 +21,6 @@ class _SignInState extends State<SignIn> {
   late String _email, _password, _userName;
   final _formKey = GlobalKey<FormState>();
   late AuthController authController;
-  bool _rememberMe = false;
   bool _loading = false;
   bool _termsAndConditions = false;
   bool _isSignup = false;
@@ -378,7 +377,7 @@ class _SignInState extends State<SignIn> {
               child: Form(
                 key: _formKey,
                 child: SafeArea(
-                  child: Column(
+                  child: ListView(
                     children: [
                       _buildUserNameTF(),
                       _buildEmailTF(),

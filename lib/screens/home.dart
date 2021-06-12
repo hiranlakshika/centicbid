@@ -18,10 +18,16 @@ class Home extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          IconButton(
-            icon: Icon(Icons.notifications),
-            onPressed: () => Get.to(() => NotificationsList()),
-          ),
+          Obx(() {
+            if (_controller.firebaseUser.value != null) {
+              return IconButton(
+                icon: Icon(Icons.notifications),
+                onPressed: () => Get.to(() => NotificationsList()),
+              );
+            } else {
+              return Container();
+            }
+          }),
         ],
       ),
       drawer: Container(

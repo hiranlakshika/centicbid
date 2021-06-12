@@ -18,7 +18,7 @@ class SendPushService extends GetConnect {
     response = await post('https://fcm.googleapis.com/fcm/send', {
       "to": deviceToken,
       "notification": {
-        "body": "new_bid_body".tr + auctionTitle,
+        "body": "new_bid_body".tr + ' $auctionTitle',
         "title": "new_bid".tr
       },
       "data": {"auction": auctionId}
