@@ -3,6 +3,7 @@ import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
 class MessagingController extends GetxController {
+  static MessagingController to = Get.find();
   FirebaseMessaging messaging = FirebaseMessaging.instance;
   late List<Message> messagesList;
 
@@ -16,6 +17,11 @@ class MessagingController extends GetxController {
       provisional: false,
       sound: true,
     );
+    messaging.setForegroundNotificationPresentationOptions(
+      alert: true, // Required to display a heads up notification
+      badge: true,
+      sound: true,
+    );
     if (settings.authorizationStatus == AuthorizationStatus.authorized) {
       print('User granted permission');
     } else if (settings.authorizationStatus ==
@@ -26,12 +32,17 @@ class MessagingController extends GetxController {
     }
   }
 
-  _configureFirebaseListeners() async {
+  Future<String> getDeviceToken() async {
+    String deviceToken = '';
+    await messaging.getToken().then((token) {
+      deviceToken = token!;
+    });
+    return deviceToken;
+  }
+
+  configureFirebaseListeners() async {
     await _requestPermission();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-      print('Got a message whilst in the foreground!');
-      print('Message data: ${message.data}');
-
       if (message.notification != null) {
         print('Message also contained a notification: ${message.notification}');
       }

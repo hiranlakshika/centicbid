@@ -4,7 +4,9 @@ import 'package:centicbid/db/firestore_util.dart';
 import 'package:centicbid/db/local_db.dart';
 import 'package:centicbid/models/auction.dart';
 import 'package:centicbid/models/bid.dart';
+import 'package:centicbid/models/user.dart';
 import 'package:centicbid/screens/sign_in.dart';
+import 'package:centicbid/services/send_push_service.dart';
 import 'package:centicbid/theme/styles.dart';
 import 'package:centicbid/util.dart';
 import 'package:flutter/material.dart';
@@ -112,6 +114,21 @@ class _ItemDetailsState extends State<ItemDetails> {
     }
   }
 
+  Future<Response> sendPushMessage() async {
+    var response;
+    if (widget.auction.uid!.isNotEmpty &&
+        widget.auction.uid != _controller.firebaseUser.value!.uid) {
+      User? lastBidder =
+          await _firestoreControllers.getUser(widget.auction.uid ?? '');
+      SendPushService pushService = Get.put(SendPushService());
+      response = await pushService.sendPush(
+          deviceToken: lastBidder!.deviceToken,
+          auctionTitle: widget.auction.title,
+          auctionId: widget.auction.id);
+    }
+    return response;
+  }
+
   addFirestoreBidRecord(Bid bid) async {
     try {
       await _firestoreControllers.addBid(bid);
@@ -153,6 +170,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                           auctionId: widget.auction.id,
                           bid: _bidValue);
                       await addLocalAuctionRecord(widget.auction, _bidValue);
+                      await sendPushMessage();
                       await addFirestoreBidRecord(bid);
                     }
                     Get.back();

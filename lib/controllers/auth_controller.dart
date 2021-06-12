@@ -1,3 +1,4 @@
+import 'package:centicbid/controllers/messaging_controller.dart';
 import 'package:centicbid/db/firestore_util.dart';
 import 'package:centicbid/db/local_db.dart';
 import 'package:centicbid/util.dart';
@@ -7,6 +8,8 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   static AuthController to = Get.find();
+  final FirestoreController firestoreController =
+      Get.put(FirestoreController());
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Rxn<User> firebaseUser = Rxn<User>();
 
@@ -44,9 +47,9 @@ class AuthController extends GetxController {
         var db = DatabaseHelper();
         await db.database
             .whenComplete(() async => await db.deleteLocalDatabase());
-        FirestoreController firestoreController =
-            Get.put(FirestoreController());
         await firestoreController.getBids(firebaseUser.value!.uid);
+        String deviceToken = await MessagingController.to.getDeviceToken();
+        await firestoreController.addUser(firebaseUser.value!.uid, deviceToken);
         return userCredential;
       }
     } on FirebaseAuthException catch (e) {
