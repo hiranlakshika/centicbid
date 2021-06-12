@@ -1,7 +1,7 @@
 class Message {
   final String title;
   final String body;
-  final String message;
+  final String auctionId;
 
-  Message(this.title, this.body, this.message);
+  Message(this.title, this.body, this.auctionId);
 }

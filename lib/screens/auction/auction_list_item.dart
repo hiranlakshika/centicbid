@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_countdown_timer/flutter_countdown_timer.dart';
 import 'package:get/get.dart';
-import 'item_details.dart';
+import '../item_details.dart';
 import 'package:getwidget/getwidget.dart';
 
 class AuctionListItem extends StatelessWidget {

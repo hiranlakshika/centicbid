@@ -12,6 +12,8 @@ class FirestoreController extends GetxController {
   CollectionReference _auction =
       FirebaseFirestore.instance.collection('auction');
   CollectionReference _user = FirebaseFirestore.instance.collection('user');
+  CollectionReference _notifications =
+      FirebaseFirestore.instance.collection('notifications');
 
   Future<void> addBid(Bid bid) {
     return _bids
@@ -22,6 +24,20 @@ class FirestoreController extends GetxController {
         })
         .then((value) => print("Bid Added"))
         .catchError((error) => print("Failed to add bid: $error"));
+  }
+
+  Future<void> addNotification(
+      String newBidValue, String auctionTitle, String uid, String auctionId) {
+    return _notifications
+        .add({
+          'title': ("new_bid".tr + ' $newBidValue'),
+          'body': ("new_bid_body".tr + ' $auctionTitle'),
+          'uid': uid,
+          'auction_id': auctionId,
+        })
+        .then((value) => print('Notification Added'))
+        .onError(
+            (error, stackTrace) => print("Failed to add notification: $error"));
   }
 
   Future<void> addUser(String uid, String token) async {

@@ -46,4 +46,7 @@ const Map<String, String> enUS = {
   'uname_required': 'User Name cannot be empty',
   'name': 'Name',
   'ok': 'OK',
+  'notifications': 'Notifications',
+  'new_bid': 'New Bid',
+  'new_bid_body': 'Someone else has placed a higher bid for',
 };

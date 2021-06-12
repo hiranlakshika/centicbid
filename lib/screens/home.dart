@@ -1,11 +1,12 @@
 import 'package:centicbid/controllers/auth_controller.dart';
-import 'package:centicbid/screens/auction_list.dart';
+import 'package:centicbid/screens/auction/auction_list.dart';
 import 'package:centicbid/screens/bids/my_bids_tab_view.dart';
 import 'package:centicbid/screens/sign_in.dart';
 import 'package:centicbid/util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'notifications/notifications_list.dart';
 
 class Home extends StatelessWidget {
   final AuthController _controller = Get.put(AuthController());
@@ -15,7 +16,14 @@ class Home extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      appBar: AppBar(
+        actions: [
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () => Get.to(() => NotificationsList()),
+          ),
+        ],
+      ),
       drawer: Container(
         width: 260.0,
         child: Drawer(

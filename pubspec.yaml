@@ -43,6 +43,7 @@ dependencies:
   firebase_messaging: ^10.0.2
   sqflite_common_ffi: ^2.0.0+1
   firebase_remote_config: ^0.10.0+2
+  get_storage: ^2.0.2
 
 dev_dependencies:
   flutter_test:

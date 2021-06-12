@@ -1,11 +1,9 @@
-import 'package:centicbid/models/message.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
 
 class MessagingController extends GetxController {
   static MessagingController to = Get.find();
   FirebaseMessaging messaging = FirebaseMessaging.instance;
-  late List<Message> messagesList;
 
   _requestPermission() async {
     NotificationSettings settings = await messaging.requestPermission(
@@ -44,7 +42,10 @@ class MessagingController extends GetxController {
     await _requestPermission();
     FirebaseMessaging.onMessage.listen((RemoteMessage message) {
       if (message.notification != null) {
-        print('Message also contained a notification: ${message.notification}');
+        Get.snackbar(
+            message.notification!.title ?? '', message.notification!.body ?? '',
+            animationDuration: Duration(seconds: 1),
+            duration: Duration(seconds: 3));
       }
     });
   }

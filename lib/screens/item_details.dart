@@ -27,9 +27,9 @@ class ItemDetails extends StatefulWidget {
 class _ItemDetailsState extends State<ItemDetails> {
   int _currentImage = 0;
   double _bidValue = 0;
-  AuthController _controller = AuthController.to;
+  AuthController _authController = AuthController.to;
   late DateTime _remainingTime;
-  late FirestoreController _firestoreControllers;
+  late FirestoreController _firestoreController;
 
   List<T> map<T>(List list, Function handler) {
     List<T> result = [];
@@ -96,13 +96,13 @@ class _ItemDetailsState extends State<ItemDetails> {
         final result = await db.retrieveAuction(auction.id);
         if (result.length == 0) {
           await db.insertAuction(
-              auction, newBid, _controller.firebaseUser.value!.uid);
+              auction, newBid, _authController.firebaseUser.value!.uid);
         } else {
           Auction newAuction = Auction(
               id: auction.id,
               title: auction.title,
               description: auction.description,
-              uid: _controller.firebaseUser.value!.uid,
+              uid: _authController.firebaseUser.value!.uid,
               basePrice: auction.basePrice,
               remainingTime: auction.remainingTime,
               latestBid: newBid);
@@ -115,11 +115,15 @@ class _ItemDetailsState extends State<ItemDetails> {
   }
 
   Future<Response> sendPushMessage() async {
-    var response;
+    Response response = Response();
     if (widget.auction.uid!.isNotEmpty &&
-        widget.auction.uid != _controller.firebaseUser.value!.uid) {
+        widget.auction.uid != _authController.firebaseUser.value!.uid) {
       User? lastBidder =
-          await _firestoreControllers.getUser(widget.auction.uid ?? '');
+          await _firestoreController.getUser(widget.auction.uid ?? '');
+
+      await _firestoreController.addNotification(_bidValue.toString(),
+          widget.auction.title, widget.auction.uid ?? '', widget.auction.id);
+
       SendPushService pushService = Get.put(SendPushService());
       response = await pushService.sendPush(
           deviceToken: lastBidder!.deviceToken,
@@ -131,9 +135,9 @@ class _ItemDetailsState extends State<ItemDetails> {
 
   addFirestoreBidRecord(Bid bid) async {
     try {
-      await _firestoreControllers.addBid(bid);
-      await _firestoreControllers.updateAuctionValues(
-          _bidValue, widget.auction.id, _controller.firebaseUser.value!.uid);
+      await _firestoreController.addBid(bid);
+      await _firestoreController.updateAuctionValues(_bidValue,
+          widget.auction.id, _authController.firebaseUser.value!.uid);
     } catch (e) {
       print(e);
     }
@@ -166,7 +170,7 @@ class _ItemDetailsState extends State<ItemDetails> {
                       showErrorToast('bid_value_should_be_greater'.tr);
                     } else {
                       Bid bid = Bid(
-                          userId: _controller.firebaseUser.value!.uid,
+                          userId: _authController.firebaseUser.value!.uid,
                           auctionId: widget.auction.id,
                           bid: _bidValue);
                       await addLocalAuctionRecord(widget.auction, _bidValue);
@@ -186,7 +190,7 @@ class _ItemDetailsState extends State<ItemDetails> {
   void initState() {
     _remainingTime =
         getTimeFromFireStoreTimeStamp(widget.auction.remainingTime);
-    _firestoreControllers = Get.put(FirestoreController());
+    _firestoreController = Get.put(FirestoreController());
     super.initState();
   }
 
@@ -236,7 +240,7 @@ class _ItemDetailsState extends State<ItemDetails> {
             visible: _remainingTime.isAfter(DateTime.now()),
             child: ElevatedButton(
               onPressed: () {
-                if (_controller.firebaseUser.value == null) {
+                if (_authController.firebaseUser.value == null) {
                   showInfoToast('user_needs_to_sign_in'.tr);
                   Get.to(() => SignIn(
                         fromHome: false,
