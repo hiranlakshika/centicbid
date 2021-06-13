@@ -49,4 +49,5 @@ const Map<String, String> enUS = {
   'notifications': 'Notifications',
   'new_bid': 'New Bid',
   'new_bid_body': 'Someone else has placed a higher bid for',
+  'no_internet': 'No internet connection',
 };

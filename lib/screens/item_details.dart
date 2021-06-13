@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:centicbid/controllers/auth_controller.dart';
 import 'package:centicbid/db/firestore_util.dart';
@@ -247,14 +249,21 @@ class _ItemDetailsState extends State<ItemDetails> {
             child: Container(
               alignment: Alignment.center,
               child: ElevatedButton(
-                onPressed: () {
-                  if (_authController.firebaseUser.value == null) {
-                    showInfoToast('user_needs_to_sign_in'.tr);
-                    Get.to(() => SignIn(
-                          fromHome: false,
-                        ));
-                  } else {
-                    _displayTextInputDialog(context);
+                onPressed: () async {
+                  try {
+                    final result = await InternetAddress.lookup('example.com');
+                    if (result.isNotEmpty && result[0].rawAddress.isNotEmpty) {
+                      if (_authController.firebaseUser.value == null) {
+                        showInfoToast('user_needs_to_sign_in'.tr);
+                        Get.to(() => SignIn(
+                              fromHome: false,
+                            ));
+                      } else {
+                        _displayTextInputDialog(context);
+                      }
+                    }
+                  } on SocketException catch (_) {
+                    showErrorToast('no_internet'.tr);
                   }
                 },
                 child: Text('place_bid'.tr),

@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:centicbid/controllers/auth_controller.dart';
 import 'package:centicbid/screens/auction/auction_list.dart';
 import 'package:centicbid/screens/bids/my_bids_tab_view.dart';
@@ -71,9 +72,20 @@ class Home extends StatelessWidget {
                     leading: Icon(
                       Icons.login,
                     ),
-                    onTap: () => Get.to(() => SignIn(
-                          fromHome: true,
-                        )),
+                    onTap: () async {
+                      try {
+                        final result =
+                            await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty &&
+                            result[0].rawAddress.isNotEmpty) {
+                          Get.to(() => SignIn(
+                                fromHome: true,
+                              ));
+                        }
+                      } on SocketException catch (_) {
+                        showErrorToast('no_internet'.tr);
+                      }
+                    },
                   );
                 } else {
                   return Container();
@@ -104,8 +116,17 @@ class Home extends StatelessWidget {
                       Icons.logout,
                     ),
                     onTap: () async {
-                      await _controller.signOut();
-                      showInfoToast('user_signed_out'.tr);
+                      try {
+                        final result =
+                            await InternetAddress.lookup('example.com');
+                        if (result.isNotEmpty &&
+                            result[0].rawAddress.isNotEmpty) {
+                          await _controller.signOut();
+                          showInfoToast('user_signed_out'.tr);
+                        }
+                      } on SocketException catch (_) {
+                        showErrorToast('no_internet'.tr);
+                      }
                     },
                   );
                 } else {
