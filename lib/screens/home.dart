@@ -18,6 +18,8 @@ class Home extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        centerTitle: true,
+        title: Text('auctions'.tr),
         actions: [
           Obx(() {
             if (_controller.firebaseUser.value != null) {
