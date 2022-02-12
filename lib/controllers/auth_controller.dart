@@ -8,8 +8,7 @@ import 'package:get/get.dart';
 
 class AuthController extends GetxController {
   static AuthController to = Get.find();
-  final FirestoreController firestoreController =
-      Get.put(FirestoreController());
+  final FirestoreController firestoreController = Get.put(FirestoreController());
   final FirebaseAuth _auth = FirebaseAuth.instance;
   Rxn<User> firebaseUser = Rxn<User>();
 
@@ -41,12 +40,10 @@ class AuthController extends GetxController {
   Future<UserCredential?> signInWithEmail(String email, String password) async {
     UserCredential userCredential;
     try {
-      userCredential = await _auth.signInWithEmailAndPassword(
-          email: email, password: password);
+      userCredential = await _auth.signInWithEmailAndPassword(email: email, password: password);
       if (firebaseUser.value != null) {
         var db = DatabaseHelper();
-        await db.database
-            .whenComplete(() async => await db.deleteLocalDatabase());
+        await db.database.whenComplete(() async => await db.deleteLocalDatabase());
         await firestoreController.getBids(firebaseUser.value!.uid);
         String deviceToken = await MessagingController.to.getDeviceToken();
         await firestoreController.addUser(firebaseUser.value!.uid, deviceToken);
@@ -61,11 +58,9 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<UserCredential?> registerWithEmail(
-      String email, String password, String userName) async {
+  Future<UserCredential?> registerWithEmail(String email, String password, String userName) async {
     try {
-      return await _auth.createUserWithEmailAndPassword(
-          email: email, password: password);
+      return await _auth.createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (e) {
       if (e.code == 'weak-password') {
         showErrorToast('weak_pw'.tr);
@@ -96,5 +91,25 @@ class AuthController extends GetxController {
   // Sign out
   Future<void> signOut() {
     return _auth.signOut();
+  }
+
+  verifyPhone(int phoneNumber) async {
+    await _auth.verifyPhoneNumber(
+      phoneNumber: '+94702017200',
+      verificationCompleted: (PhoneAuthCredential credential) async {
+        await _auth.signInWithCredential(credential);
+      },
+      verificationFailed: (FirebaseAuthException e) {
+        if (e.code == 'invalid-phone-number') {
+          print('The provided phone number is not valid.');
+        }
+      },
+      codeSent: (String verificationId, int? resendToken) async {
+        String smsCode = 'xxxx';
+        PhoneAuthCredential credential = PhoneAuthProvider.credential(verificationId: verificationId, smsCode: smsCode);
+        await _auth.signInWithCredential(credential);
+      },
+      codeAutoRetrievalTimeout: (String verificationId) {},
+    );
   }
 }
